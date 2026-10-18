@@ -1,0 +1,26 @@
+# AI features of the SaaS business and the token counts the cost model assumes for them.
+# Token counts are assumptions about plausible designs, not measurements; replace them
+# with the gateway's own counts as soon as a feature runs.
+
+features:
+  analyst_answer:
+    description: "a question answered by the governed agent: plan, query through tools, compose"
+    calls_per_answer: 3
+    input_tokens_per_call: 4000     # system prompt and tool schemas ~1,500, tool results ~2,500
+    output_tokens_per_call: 300
+    answers_per_month: {small: 2000, medium: 20000, large: 200000}
+  support_answer:
+    description: "a help-centre answer from retrieved passages (RAG)"
+    calls_per_answer: 1
+    input_tokens_per_call: 3500     # system ~500, five passages ~2,900, question ~100
+    output_tokens_per_call: 250
+    answers_per_month: {small: 10000, medium: 100000, large: 1000000}
+
+# Short-text triage on day 1: the call counts are measured (short-text-triage); the token
+# sizes per call are assumed.
+triage_day1:
+  per_row: {calls: 20000, input_tokens: 150, output_tokens: 15}
+  per_cluster: {calls: 125, input_tokens: 2500, output_tokens: 60}
+
+# The feature whose per-request price sets the self-hosting break-even.
+break_even_feature: support_answer

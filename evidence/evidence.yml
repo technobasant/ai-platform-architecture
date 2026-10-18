@@ -1,0 +1,195 @@
+# Every figure the architecture cites, with the file it was measured in.
+# Entries copied from basantbhattarai.com.np (_data/metrics.yml) keep their ids and values;
+# the rest are quoted from the repositories named. scripts/build.py writes them into the
+# decision records and EVIDENCE.md.
+
+agent_answer_match:
+  value: "48/54"
+  label: "answers matched an answer key computed by SQL"
+  method: "one live run of a 54-question golden set against qwen3:8b under Ollama, temperature 0, thinking off, over a seeded synthetic warehouse; 95% CI 78\u201395%"
+  repo: governed-agent
+  file: MEASUREMENTS.md
+
+agent_published_wrong:
+  value: "3 of 37"
+  label: "answers published without review were wrong"
+  method: "same run; a finding is published only after its schema, policy and grounding checks pass with no proposal attached; 95% Wilson interval on 3/37 is 3\u201321%"
+  repo: governed-agent
+  file: MEASUREMENTS.md
+
+agent_unanswerable_admitted:
+  value: "4 of 8"
+  label: "unanswerable questions answered with \u201Cthe data does not have this\u201D"
+  method: "eight questions with no supporting data (NPS, margin without costs, delivery time without delivery dates and others); 95% CI 22\u201378%"
+  repo: governed-agent
+  file: MEASUREMENTS.md
+
+agent_injection_actions:
+  value: "0 of 5"
+  label: "planted instructions that led to a proposed action"
+  method: "five questions that make the model read instructions planted in product descriptions and refund notes; actions can only be proposed, and execute after a named person approves"
+  repo: governed-agent
+  file: MEASUREMENTS.md
+
+evalproof_noise_gate:
+  value: "p = 0.39"
+  label: "for a 4.8-point judge drop the gate declined to fail"
+  method: "exact McNemar on 83 paired cases \u2014 8 worse, 4 better, 71 unchanged \u2014 qwen3:1.7b judged by qwen3:8b on Ollama, temperature 0"
+  repo: evalproof
+  file: MEASUREMENTS.md
+
+evalproof_latency_p95:
+  value: "1,469 \u2192 4,422 ms"
+  label: "p95 latency, the regression that was real"
+  method: "system latency over the same 83 cases, sequential, one Apple M5; mean answer length went from 19 to 77 tokens"
+  repo: evalproof
+  file: MEASUREMENTS.md
+
+evalproof_gold_errors:
+  value: "7 vs 4"
+  label: "judge\u2013key disagreements where the key, not the judge, was wrong"
+  method: "all 13 disagreements across both runs read by hand; 2 were ambiguous"
+  repo: evalproof
+  file: MEASUREMENTS.md
+
+evalproof_pairwise_flips:
+  value: "42.2%"
+  label: "pairwise verdicts that flipped with answer order"
+  method: "35 of 83 pairs judged in both orders (166 calls) by qwen3:8b; order-dependent verdicts are reported as ties"
+  repo: evalproof
+  file: MEASUREMENTS.md
+
+retrieval_filter_rows:
+  value: "3.9 of 10"
+  label: "rows returned by post-filtered HNSW at 10% selectivity"
+  method: "pgvector 0.8.7 HNSW at ef_search 40 with iterative scan off, 1,000 queries over 381,559 vectors, a filter keeping 10% of rows; recall@10 0.391 against exact kNN over the rows that pass"
+  repo: retrieval-bench
+  file: MEASUREMENTS.md
+
+retrieval_filter_middle:
+  value: "0.745"
+  label: "recall@10 of OpenSearch's efficient filter at 10% selectivity"
+  method: "filter inside the knn clause, Faiss HNSW at ef_search 40, 1,000 queries over 381,559 vectors, against exact kNN over the rows that pass"
+  repo: retrieval-bench
+  file: MEASUREMENTS.md
+
+retrieval_iterative_scan:
+  value: "0.949"
+  label: "recall@10 restored by pgvector's iterative scan at 10% selectivity"
+  method: "hnsw.iterative_scan = relaxed_order, ef_search 40, same queries and filter as the post-filtered run"
+  repo: retrieval-bench
+  file: MEASUREMENTS.md
+
+retrieval_engine_quality:
+  value: "\u2264 0.0015"
+  label: "nDCG@10 between pgvector, Qdrant and OpenSearch and exact search"
+  method: "the same bge-small vectors loaded into all three engines, ef_search 200, scored against human relevance judgements on SciFact, ArguAna and Touch\u00E9 2020"
+  repo: retrieval-bench
+  file: MEASUREMENTS.md
+
+rtml_leakage:
+  value: "0.363 vs 0.941"
+  label: "future AUC-PR, naive join against point-in-time join"
+  method: "same rows, labels, model and hyperparameters; only the training join differs. Scored on the two weeks after training with point-in-time features and true labels, on seeded synthetic payments (874,446 transactions, 0.80% fraud)"
+  repo: realtime-ml
+  file: MEASUREMENTS.md
+
+rtml_cost_saved:
+  value: "82.5%"
+  label: "of fraud cost saved on two unseen weeks"
+  method: "a $5 review per flag plus the amount of every missed fraud, against approving everything; threshold chosen on the validation window, true labels. A hand-written rule saved 20.7%"
+  repo: realtime-ml
+  file: MEASUREMENTS.md
+
+rtml_parity:
+  value: "99.905%"
+  label: "of 9,500 live requests served exactly the training features"
+  method: "features logged by the API compared with Feast's point-in-time join for the same transactions, on a live stack replaying a day in about seven minutes"
+  repo: realtime-ml
+  file: MEASUREMENTS.md
+
+rtml_drift_psi:
+  value: "0 of 5"
+  label: "tactics drifts caught by feature PSI"
+  method: "five seeded runs with a fraud-tactics drift and five without, monitors replayed every 6 hours over the trailing 24; calendar-trending features excluded, threshold 0.2 or 0.1"
+  repo: realtime-ml
+  file: MEASUREMENTS.md
+
+rtml_serve_p99:
+  value: "\u2264 4.3 ms"
+  label: "server-side p99 to fetch features and score"
+  method: "the API's own timer around the Feast online read and the model, at 25, 50 and 100 requests/s after a 500-request warm-up (whose p99 was 22.4 ms); 9,000 requests, 0 errors; every container on one 8-CPU VM, so no network hops"
+  repo: realtime-ml
+  file: MEASUREMENTS.md
+
+deploy_bad_release_aborted:
+  value: "6 of 6"
+  label: "bad releases aborted by canary analysis"
+  method: "a release whose Envoy sidecar returns 500 on 30% of requests, under 20 req/s from k6; three runs with keep-alive clients, three with a new connection per request; Prometheus analysis every 15 s after a 30 s initial delay"
+  repo: platform-deployments
+  file: MEASUREMENTS.md
+
+deploy_good_release_failures:
+  value: "0 of 18,003"
+  label: "requests failed across three good canary releases"
+  method: "k6 at 20 req/s for five minutes per run, GET /healthz and GET /review-queue with a 10 s timeout; canary 20% \u2192 50% with 60 s pauses, background analysis and an evidence step before 100%"
+  repo: platform-deployments
+  file: MEASUREMENTS.md
+
+# Quoted from the repositories' MEASUREMENTS.md files (not on the site's metrics list).
+
+evalproof_reasoning_fpr:
+  value: "5.9% → 0.0%"
+  label: "false-positive rate of the judge on the baseline run, thinking off against thinking on"
+  method: "the same qwen3:8b judge on cached answers, scored against labels audited case by case wherever the answer key and the two judges disagreed (22 cases); thinking took 6.7 times the judge time (1,338 s against 201 s for 83 verdicts)"
+  repo: evalproof
+  file: MEASUREMENTS.md
+
+evalproof_determinism:
+  value: "20 of 20"
+  label: "cases with identical outputs, verdicts and judge reasons when re-run with the cache off"
+  method: "temperature 0 and seed 0 on local models through Ollama 0.23.2; checked on this backend only"
+  repo: evalproof
+  file: MEASUREMENTS.md
+
+agent_replay:
+  value: "54 of 54"
+  label: "cases where replaying the recorded model reproduced the live run's output"
+  method: "the live run's model responses recorded once and replayed in CI, so tests and the eval gate run with no model"
+  repo: governed-agent
+  file: MEASUREMENTS.md
+
+prev_cc_slope:
+  value: "0.628"
+  label: "of the true trend recovered by counting a 95%-accurate classifier's labels"
+  method: "prevalence rising from 10% to 25%; classifier TPR 0.645 and FPR 0.0166 at its training prior, so the counted share moves at TPR − FPR times the true one; adjusted classify-and-count recovered 1.003"
+  repo: prevalence-shift
+  file: MEASUREMENTS.md
+
+prev_cc_coverage:
+  value: "0.0%"
+  label: "of 12,000 period estimates where the naive 95% interval of counted labels covered the true prevalence"
+  method: "the same rising series; adjusted classify-and-count covered 95.0%, prediction-powered inference 94.7%"
+  repo: prevalence-shift
+  file: MEASUREMENTS.md
+
+prev_upgrade_trend:
+  value: "+24.2%"
+  label: "apparent change in a flat 15% series when the classifier was upgraded mid-series and its labels were counted"
+  method: "true change zero; the upgrade changed the classifier's error rates, and counting labels reported them as a trend in 100% of replications"
+  repo: prevalence-shift
+  file: MEASUREMENTS.md
+
+triage_calls:
+  value: "125 vs 20,000"
+  label: "LLM labelling calls on day 1, one per cluster against one per row"
+  method: "20,000 short-text rows normalised to 1,537 distinct keys, clustered with UMAP and HDBSCAN; one call per cluster plus one taxonomy call"
+  repo: short-text-triage
+  file: MEASUREMENTS.md
+
+triage_margin:
+  value: "95.2% vs 66.2%"
+  label: "precision assigning new rows to known intents: a margin rule against the best absolute similarity threshold"
+  method: "day-2 rows assigned to the nearest centroid only when it beats the second by a margin of 0.03 (1,728 rows) against a fixed cosine threshold of 0.92 (2,862 rows); the rest go to review"
+  repo: short-text-triage
+  file: MEASUREMENTS.md

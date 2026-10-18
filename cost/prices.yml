@@ -1,0 +1,81 @@
+# List prices used by the cost model: standard (not batch) API prices per million tokens,
+# and AWS on-demand GPU instances in us-east-1. Each was read on the vendor's own page on
+# the date below; `quote` is what the page said. Prices change, and two of these are
+# already scheduled to: see the notes.
+retrieved: "2026-10-18"
+
+models:
+  claude-opus-5-5:
+    provider: Anthropic
+    input: 4.00
+    output: 20.00
+    source: https://platform.claude.com/docs/en/about-claude/pricing
+    quote: "Claude Opus 5.5 | $4 / MTok | $5 / MTok | $8 / MTok | $0.20 / MTok | $20 / MTok"
+  claude-sonnet-5:
+    provider: Anthropic
+    input: 2.00
+    output: 10.00
+    source: https://platform.claude.com/docs/en/about-claude/pricing
+    quote: "Claude Sonnet 5 | $2 / MTok | $2.50 / MTok | $4 / MTok | $0.20 / MTok | $10 / MTok"
+  claude-haiku-4-5:
+    provider: Anthropic
+    input: 1.00
+    output: 5.00
+    source: https://platform.claude.com/docs/en/about-claude/pricing
+    quote: "Claude Haiku 4.5 | $1 / MTok | $1.25 / MTok | $2 / MTok | $0.10 / MTok | $5 / MTok"
+  gpt-6-astra:
+    provider: OpenAI
+    input: 10.00
+    output: 50.00
+    source: https://developers.openai.com/api/docs/pricing
+    quote: "gpt-6-astra | $10.00 | $1.00 | $12.50 | $50.00 | …"
+    note: short-context prices, up to 272K input tokens
+  gpt-6-1-sol:
+    provider: OpenAI
+    input: 2.00
+    output: 10.00
+    source: https://developers.openai.com/api/docs/pricing
+    quote: "gpt-6.1-sol | $2.00 | $0.10 | $2.50 | $10.00 | …"
+  gpt-6-luna:
+    provider: OpenAI
+    input: 0.10
+    output: 0.50
+    source: https://developers.openai.com/api/docs/pricing
+    quote: "gpt-6-luna | $0.10 | $0.01 | $0.125 | $0.50 | …"
+  gemini-3-1-pro-preview:
+    provider: Google
+    input: 2.00
+    output: 12.00
+    source: https://ai.google.dev/gemini-api/docs/pricing
+    quote: "$2.00, prompts <= 200k tokens … $12.00, prompts <= 200k tokens"
+    note: a preview model
+  gemini-3-8-flash:
+    provider: Google
+    input: 0.75
+    output: 3.75
+    source: https://ai.google.dev/gemini-api/docs/pricing
+    quote: "$0.75 through December 31, 2026. $1.50 starting January 1, 2027. … $3.75 through December 31, 2026. $7.50 starting January 1, 2027."
+    note: doubles on 2027-01-01
+  gemini-3-5-flash-lite:
+    provider: Google
+    input: 0.30
+    output: 2.50
+    source: https://ai.google.dev/gemini-api/docs/pricing
+    quote: "$0.30 (text / image / video / audio) … $2.50"
+
+gpus:
+  g6-xlarge:
+    gpu: 1x NVIDIA L4
+    usd_per_hour: 0.8048
+    source: https://aws.amazon.com/ec2/pricing/on-demand/
+    quote: "\"price\": \"0.8048000000\", … \"Instance Type\": \"g6.xlarge\""
+  g6e-xlarge:
+    gpu: 1x NVIDIA L40S
+    usd_per_hour: 1.861
+    source: https://aws.amazon.com/ec2/pricing/on-demand/
+    quote: "\"price\": \"1.8610000000\", … \"Instance Type\": \"g6e.xlarge\""
+  p5-48xlarge:
+    gpu: 8x NVIDIA H100
+    usd_per_hour: 55.04
+    source: https://aws.amazon.com/ec2/pricing/on-demand/
+    quote: "\"price\": \"55.0400000000\", … \"Instance Type\": \"p5.48xlarge\""

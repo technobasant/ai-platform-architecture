@@ -1,0 +1,206 @@
+{
+  "prices_retrieved": "2026-10-18",
+  "per_answer": {
+    "analyst_answer": {
+      "claude-opus-5-5": 0.066,
+      "claude-sonnet-5": 0.033,
+      "claude-haiku-4-5": 0.0165,
+      "gpt-6-astra": 0.165,
+      "gpt-6-1-sol": 0.033,
+      "gpt-6-luna": 0.00165,
+      "gemini-3-1-pro-preview": 0.0348,
+      "gemini-3-8-flash": 0.012375,
+      "gemini-3-5-flash-lite": 0.00585
+    },
+    "support_answer": {
+      "claude-opus-5-5": 0.019,
+      "claude-sonnet-5": 0.0095,
+      "claude-haiku-4-5": 0.00475,
+      "gpt-6-astra": 0.0475,
+      "gpt-6-1-sol": 0.0095,
+      "gpt-6-luna": 0.000475,
+      "gemini-3-1-pro-preview": 0.01,
+      "gemini-3-8-flash": 0.003563,
+      "gemini-3-5-flash-lite": 0.001675
+    }
+  },
+  "monthly": {
+    "analyst_answer": {
+      "claude-opus-5-5": {
+        "small": 132.0,
+        "medium": 1320.0,
+        "large": 13200.0
+      },
+      "claude-sonnet-5": {
+        "small": 66.0,
+        "medium": 660.0,
+        "large": 6600.0
+      },
+      "claude-haiku-4-5": {
+        "small": 33.0,
+        "medium": 330.0,
+        "large": 3300.0
+      },
+      "gpt-6-astra": {
+        "small": 330.0,
+        "medium": 3300.0,
+        "large": 33000.0
+      },
+      "gpt-6-1-sol": {
+        "small": 66.0,
+        "medium": 660.0,
+        "large": 6600.0
+      },
+      "gpt-6-luna": {
+        "small": 3.3,
+        "medium": 33.0,
+        "large": 330.0
+      },
+      "gemini-3-1-pro-preview": {
+        "small": 69.6,
+        "medium": 696.0,
+        "large": 6960.0
+      },
+      "gemini-3-8-flash": {
+        "small": 24.75,
+        "medium": 247.5,
+        "large": 2475.0
+      },
+      "gemini-3-5-flash-lite": {
+        "small": 11.7,
+        "medium": 117.0,
+        "large": 1170.0
+      }
+    },
+    "support_answer": {
+      "claude-opus-5-5": {
+        "small": 190.0,
+        "medium": 1900.0,
+        "large": 19000.0
+      },
+      "claude-sonnet-5": {
+        "small": 95.0,
+        "medium": 950.0,
+        "large": 9500.0
+      },
+      "claude-haiku-4-5": {
+        "small": 47.5,
+        "medium": 475.0,
+        "large": 4750.0
+      },
+      "gpt-6-astra": {
+        "small": 475.0,
+        "medium": 4750.0,
+        "large": 47500.0
+      },
+      "gpt-6-1-sol": {
+        "small": 95.0,
+        "medium": 950.0,
+        "large": 9500.0
+      },
+      "gpt-6-luna": {
+        "small": 4.75,
+        "medium": 47.5,
+        "large": 475.0
+      },
+      "gemini-3-1-pro-preview": {
+        "small": 100.0,
+        "medium": 1000.0,
+        "large": 10000.0
+      },
+      "gemini-3-8-flash": {
+        "small": 35.62,
+        "medium": 356.25,
+        "large": 3562.5
+      },
+      "gemini-3-5-flash-lite": {
+        "small": 16.75,
+        "medium": 167.5,
+        "large": 1675.0
+      }
+    }
+  },
+  "break_even_feature": "support_answer",
+  "break_even": {
+    "g6-xlarge": {
+      "usd_per_hour": 0.8048,
+      "requests_per_hour": {
+        "claude-opus-5-5": 42,
+        "claude-sonnet-5": 85,
+        "claude-haiku-4-5": 169,
+        "gpt-6-astra": 17,
+        "gpt-6-1-sol": 85,
+        "gpt-6-luna": 1694,
+        "gemini-3-1-pro-preview": 80,
+        "gemini-3-8-flash": 226,
+        "gemini-3-5-flash-lite": 480
+      }
+    },
+    "g6e-xlarge": {
+      "usd_per_hour": 1.861,
+      "requests_per_hour": {
+        "claude-opus-5-5": 98,
+        "claude-sonnet-5": 196,
+        "claude-haiku-4-5": 392,
+        "gpt-6-astra": 39,
+        "gpt-6-1-sol": 196,
+        "gpt-6-luna": 3918,
+        "gemini-3-1-pro-preview": 186,
+        "gemini-3-8-flash": 522,
+        "gemini-3-5-flash-lite": 1111
+      }
+    },
+    "p5-48xlarge": {
+      "usd_per_hour": 55.04,
+      "requests_per_hour": {
+        "claude-opus-5-5": 2897,
+        "claude-sonnet-5": 5794,
+        "claude-haiku-4-5": 11587,
+        "gpt-6-astra": 1159,
+        "gpt-6-1-sol": 5794,
+        "gpt-6-luna": 115874,
+        "gemini-3-1-pro-preview": 5504,
+        "gemini-3-8-flash": 15450,
+        "gemini-3-5-flash-lite": 32860
+      }
+    }
+  },
+  "triage_day1": {
+    "claude-opus-5-5": {
+      "per_row": 18.0,
+      "per_cluster": 1.4
+    },
+    "claude-sonnet-5": {
+      "per_row": 9.0,
+      "per_cluster": 0.7
+    },
+    "claude-haiku-4-5": {
+      "per_row": 4.5,
+      "per_cluster": 0.35
+    },
+    "gpt-6-astra": {
+      "per_row": 45.0,
+      "per_cluster": 3.5
+    },
+    "gpt-6-1-sol": {
+      "per_row": 9.0,
+      "per_cluster": 0.7
+    },
+    "gpt-6-luna": {
+      "per_row": 0.45,
+      "per_cluster": 0.03
+    },
+    "gemini-3-1-pro-preview": {
+      "per_row": 9.6,
+      "per_cluster": 0.72
+    },
+    "gemini-3-8-flash": {
+      "per_row": 3.38,
+      "per_cluster": 0.26
+    },
+    "gemini-3-5-flash-lite": {
+      "per_row": 1.65,
+      "per_cluster": 0.11
+    }
+  }
+}
