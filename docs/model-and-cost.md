@@ -72,7 +72,7 @@ List prices retrieved 2026-10-18 ([`cost/prices.yml`](../cost/prices.yml)); toke
 - **Model choice is the largest lever.** An analyst answer costs from well under a cent to 16.5 cents depending on the model, before any design change.
 - **Self-hosting rarely pays against small hosted models.** A single L40S instance costs the same as a few hundred help-centre answers an hour on mid-sized hosted models, but several thousand an hour on the cheapest. Whether one instance can serve that rate, with an open model that passes the gate, is the part to measure before buying.
 - **Design beats model choice for repetitive text.** Triage per cluster costs a fraction of triage per row on every model, because it pays for distinct meanings, not rows.
-- **Prices move.** Two of the Gemini prices here double on 1 December 2026 and 1 January 2027 (noted in [`cost/prices.yml`](../cost/prices.yml)).
+- **Prices move.** Gemini 3.8 Flash's price doubles on 1 January 2027 (noted in [`cost/prices.yml`](../cost/prices.yml)), and Gemini 4 Argon's, not priced here, on 1 December 2026.
 
 ### Not modelled
 
