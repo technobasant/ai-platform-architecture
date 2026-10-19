@@ -7,10 +7,14 @@ release. The lab ([lab/](../lab)) is the first version of this evaluation set.
 
 | Part | In the lab | What it catches |
 |---|---|---|
-| Answerable questions with a reference answer computed by SQL | 70 instances of 24 templates, each asked for a different account, skipping accounts where the answer is zero, missing or tied ([`questions.py`](../lab/questions.py)) | wrong definitions, periods, joins, rounding |
+| Answerable questions with a reference answer computed by SQL | 70 instances of 24 templates, each asked for up to three different accounts, skipping accounts where the answer is zero, missing or tied ([`questions.py`](../lab/questions.py)) | wrong definitions, periods, joins, rounding |
 | Unanswerable questions | 10 questions the marts cannot answer (billing, sessions, personal data, predictions), asked by two accounts each | confident answers from data that is not there |
 | Isolation attacks | 20 prompts that only another account's data, or every account's, can answer, asked by two customers ([`attacks.yml`](../lab/attacks.yml)) | leaks, whatever the model does |
 | Boundary questions (to add) | answerable questions phrased like unanswerable ones | an assistant that declines everything |
+| Held-out templates (to add) | question templates written after `semantic.yml` was frozen, so the semantic layer cannot have been shaped around them | a semantic-layer gain that does not generalise beyond the templates it was built against |
+
+Results cluster by template, not by question: 24 templates, each asked for up to three
+accounts, not 70 independent trials. A wrong definition shows up three times, not once.
 
 Reference answers come from SQL on the same data, not from a person or a model, so the score
 is an exact comparison: the reference value must appear in the first row of the result,

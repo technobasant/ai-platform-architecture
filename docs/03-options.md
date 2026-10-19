@@ -15,22 +15,33 @@ role; the reference answer must appear in the first row.
 
 | Condition | Correct, of 70 | Wrong | SQL errors | Declined, of 20 unanswerable | p50 / p95 |
 |---|---:|---:|---:|---:|---|
-| Qwen3 8B (local), table definitions only | 43 | 24 | 3 | 12 | 5.0 / 8.6 s |
+| Qwen3 8B (local), table definitions only | 46 | 21 | 3 | 12 | 5.0 / 8.6 s |
 | Qwen3 8B (local), with the semantic layer | 64 | 6 | 0 | 18 | 9.1 / 11.6 s |
 | Llama 3.3 70B (hosted), table definitions only | 55 | 13 | 2 | 17 | 2.3 / 3.2 s |
 | Llama 3.3 70B (hosted), with the semantic layer | **70** | 0 | 0 | 19 | 2.1 / 2.9 s |
-| gpt-oss-120b (hosted), table definitions only | 63 | 7 | 0 | 18 | 4.0 / 8.6 s |
+| gpt-oss-120b (hosted), table definitions only | 65 | 5 | 0 | 18 | 4.0 / 8.6 s |
 | gpt-oss-120b (hosted), with the semantic layer | **70** | 0 | 0 | **20** | 2.9 / 5.5 s |
 | Databricks AI/BI Genie, the semantic layer as instructions | 69 | 1 | 0 | 19 | 14.5 / 15.0 s |
 {: aria-label="Accuracy of each way of answering customers' questions" }
 
 The semantic layer ([0003](../decisions/0003-semantic-layer.md)) is worth more than the
-choice of model: it moved Llama 3.3 70B from 55 to 70 and Qwen3 8B from 43 to 64. No model
-wrongly declined an answerable question. The hosted models ran on Databricks Free Edition's
-model serving; the local model on a laptop, so its times are the laptop's.
+choice of model: it moved Llama 3.3 70B from 55 to 70 (+15), Qwen3 8B from 46 to 64 (+18) and
+gpt-oss-120b from 65 to 70 (+5). No model wrongly declined an answerable question. The hosted
+models ran on Databricks Free Edition's model serving; the local model on a laptop, so its
+times are the laptop's. "Today" is pinned to 2026-10-01 for any query that asks the clock
+(`CURRENT_DATE`, `now()`), so these scores do not depend on when the lab is replayed.
+
+The 70 answerable questions are 24 templates, not 70 independent trials: an error in one
+template's definition counts three times (one per account it was asked for). The semantic
+layer was also written with these templates in view — its date windows and metric
+definitions map onto them — so the gains above are an upper bound for questions shaped like
+these, not a general accuracy figure; a held-out set of templates written after
+`semantic.yml` was frozen is future work.
 
 Genie, given the same definitions, was nearly as accurate, and slower than the 10-second
-target. Its one wrong answer is the most instructive result in the lab: for "how many people
+target: its timings include up to 3 s of polling (`genie.py` checks every 3 s), so the true
+latency is somewhat lower than reported, but still slower than 10 s. Its one wrong answer is
+the most instructive result in the lab: for "how many people
 used the mobile apps in September?" it wrote
 `account_id = 132 AND platform ILIKE '%ios%' OR platform ILIKE '%android%' AND …` and counted
 1,570 people, every account's Android users, against the right answer of 12. Its one answer
@@ -48,14 +59,18 @@ about the customer's account. Each generated query ran twice.
 | Qwen3 8B | 31 | 9 | 7 | 0 |
 | Llama 3.3 70B | 28 | 12 | **12** | 0 |
 | gpt-oss-120b | 33 | 7 | 4 | 0 |
-| All | 92 | 28 | **23 of 120** | **0 of 120** |
+| All | 92 | 28 | **23 of 120** | **0 of 28** |
 {: aria-label="Requests for other accounts' data that leaked, by where isolation was enforced" }
 
 A leak is a query whose result with access to every account differs from its result as the
 customer's role. Each customer's role sees 1 of the 200 accounts, so its results come from
-that account's rows alone. The model that answered best leaked most: every query Llama
-3.3 70B wrote for these requests read another account's data. Isolation is therefore the
-data's identity, never the prompt ([0002](../decisions/0002-isolation-in-the-database.md)).
+that account's rows alone. Of the 120 requests, 92 were declined and only 28 produced a query
+that could reach the database; of those 28, 0 leaked. Accuracy did not predict compliance:
+Llama 3.3 70B and gpt-oss-120b were equally accurate with the semantic layer (70 of 70), but
+two equally accurate models complied very differently when left to the prompt alone — every
+query Llama 3.3 70B wrote leaked (12 of 12), against 4 of gpt-oss-120b's 7. Isolation is
+therefore the data's identity, never the prompt
+([0002](../decisions/0002-isolation-in-the-database.md)).
 
 On a managed platform the lab's role per account does not carry over, and on Databricks a
 row filter cannot read a per-request value. The tool's own rewrite does the same job
@@ -72,7 +87,7 @@ leaked through the prompt, and for all 436 queries written for ordinary question
 |---|---|---|---|---|
 | A. Fixed question templates, no model | exact, for the templates only | ✔ | ✔ | ◐ every question a template |
 | B. The platform's assistant (Genie, Cortex Analyst) | 69 of 70 with the semantic layer | ◐ workspace identities; customers are not workspace users | ✘ 14.5 s median | ✔ |
-| C. **The client's service: hosted open-weight model, semantic layer, query tool under the customer's identity** | 70 of 70 | ✔ by the identity | ✔ 2.9 s median | ◐ a small service |
+| C. **The client's service: hosted open-weight model, semantic layer, query tool scoped by a mechanism the model cannot influence** | 70 of 70 | ✔ by the identity and the rewrite | ✔ 2.9 s median | ◐ a small service |
 | D. The same with a self-hosted model | 64 of 70 at 8B | ✔ | ◐ | ✘ GPUs to run |
 | E. Retrieval over documents | not suited to numbers | ◐ | ✔ | ◐ |
 
@@ -122,6 +137,10 @@ List prices retrieved 2026-10-18 (Databricks: 2026-10-19) ([`cost/prices.yml`](.
 | gemini-3-5-flash-lite | 978 | 2,261 | 66,861 |
 <!-- cost:end -->
 
-At the client's volume the model bill is a rounding error against the $1,500 ceiling, and
-self-hosting would cost far more than it saves: one L40S instance is cheaper only above about
-6,600 answers an hour, against about 80 an hour at launch.
+At the client's volume the model bill is a rounding error against the $1,500 ceiling, and the
+break-even table above is price arithmetic only, not a hosting plan: L4 (24 GB) and L40S
+(48 GB) are far too small to hold gpt-oss-120b (120 billion parameters) at any precision
+worth serving; of the three GPU rows, only something like p5-48xlarge (8×H100, far more
+memory) could actually host it, and there self-hosting is cheaper only above about 194,600
+answers an hour, against about 80 an hour at launch. Llama 3.3 70B is a closer fit for a
+single L40S, but at this volume self-hosting still costs more than it saves.

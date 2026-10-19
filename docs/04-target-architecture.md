@@ -13,8 +13,8 @@ flowchart LR
   svc -- prompt: question, schema,<br/>semantic layer --> gw[Model gateway<br/>budgets, fallback, logs]
   gw <--> model[(Model<br/>platform model serving)]
   svc -- one SELECT --> guard{SQL guard<br/>one statement,<br/>row and time limits}
-  guard -- passes --> tool[Query tool<br/>runs as the account's identity]
-  tool --> marts[(Usage marts<br/>row filter on account_id)]
+  guard -- passes --> tool[Query tool<br/>rewrites onto per-account tables]
+  tool --> marts[(Usage marts<br/>one service identity, reads every account)]
   tool -- rows --> svc
   svc -- answer, definition, period --> product
   svc --> trace[(Traces and audit<br/>30 days)]
@@ -45,7 +45,7 @@ influence:
 
 | Option | How the scope is applied | Model can affect it | Practical at 12,000 accounts | Measured |
 |---|---|---|---|---|
-| A database identity per account (the lab) | a role per account; row-level security on every table | no | yes in Postgres; a service principal per account on a managed platform is not | 0 of 120 attacks leaked |
+| A database identity per account (the lab) | a role per account; row-level security on every table | no | yes in Postgres; a service principal per account on a managed platform is not | 0 of the 28 attacks that reached the database leaked (of 120 attempts) |
 | One service identity, a policy reading a per-request value set by the tool | a row filter on a session value | no | yes, where the platform supports it | **not possible on Databricks**: a filter function cannot read a session variable |
 | **One service identity, the tool rewrites the query onto per-account tables** | the tool parses the SQL, refuses any table but its three, and prepends per-account versions of them | no | yes | 28 of 28 attack queries scoped exactly as row-level security; 436 of 436 ordinary answers unchanged |
 | The prompt tells the model the account | an instruction | **yes** | yes | 23 of 120 attacks leaked |
@@ -78,9 +78,9 @@ gateway's logs line up. Traces and recorded responses are kept 30 days
 |---|---|---|---|---|
 | Model provider | down, slow or rate-limited | an answer from the fallback model, or "try again shortly" | gateway errors and latency | automatic fallback; provider status |
 | The model | writes wrong SQL | a wrong number with its definition shown | the evaluation set in CI; "this is wrong" reports | fix the definition or prompt; the gate checks the fix |
-| The model | writes SQL for another account | only their own rows | isolation tests in CI | none needed: the identity scopes the data |
+| The model | writes SQL for another account | only their own rows | isolation tests in CI | none needed: the rewrite (or the lab's role) scopes the query regardless |
 | The model | follows an instruction in a question | at most a wrong read of their own data | isolation and injection tests | the guard and the read-only identity limit it to reads |
 | SQL guard | refuses a valid query | "I could not answer that" | refusal rate on the dashboard | widen the guard with a test |
 | The marts | late or missing a day | an answer for the period that exists, with the period shown | the platform's freshness checks | the platform's runbooks |
-| The row filter | misconfigured | another account's rows | isolation tests block the deploy | fix the policy; audit what was served |
+| The rewrite | has a gap: an unlisted expression or a missed escape | another account's rows | the escape corpus and the isolation suite block the deploy ([risks](risks.md) R3) | fix the rule, add the escape to the corpus, re-run the suite; audit what was served |
 | Cost | a spike in questions or tokens | answers continue until the budget, then "try again later" | gateway budget alerts | raise the budget or rate-limit by account |
