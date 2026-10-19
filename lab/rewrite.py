@@ -168,7 +168,10 @@ def catalog(account: int) -> dict:
     """Row-level security filters rows, not the catalog: what the customer's own role reads
     of every account from pg_class, and what the rewrite makes of the same query."""
     count = "SELECT count(*) FROM users"
-    stats = "SELECT reltuples::bigint FROM pg_class WHERE relname = 'users' AND relnamespace = 'usage'::regnamespace"
+    stats = (
+        "SELECT reltuples::bigint FROM pg_class "
+        "WHERE relname = 'users' AND relnamespace = 'usage'::regnamespace"
+    )
     return {
         "users_counted_by_the_customer_role": run.execute(f"acct_{account}", count)["rows"][0][0],
         "users_in_pg_class_read_by_the_customer_role": run.execute(f"acct_{account}", stats)["rows"][0][0],
