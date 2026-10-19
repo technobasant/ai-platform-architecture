@@ -1,0 +1,21 @@
+# The usage mart the assistant reads, as stage 1 of the data platform publishes it, in a
+# local Postgres with one login role per customer account. Local only: trust
+# authentication, bound to localhost.
+name: ai-assistant-lab
+
+services:
+  mart:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./:/lab:ro
+      - mart-data:/var/lib/postgresql/data
+    ports: ["127.0.0.1:55442:5432"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      retries: 60
+
+volumes:
+  mart-data:

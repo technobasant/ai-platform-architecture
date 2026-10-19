@@ -2,7 +2,7 @@
 # and AWS on-demand GPU instances in us-east-1. Each was read on the vendor's own page on
 # the date below; `quote` is what the page said. Prices change, and two of these are
 # already scheduled to: see the notes.
-retrieved: "2026-10-18"
+retrieved: "2026-10-18 (Databricks: 2026-10-19)"
 
 models:
   claude-opus-5-5:
@@ -62,6 +62,20 @@ models:
     output: 2.50
     source: https://ai.google.dev/gemini-api/docs/pricing
     quote: "$0.30 (text / image / video / audio) … $2.50"
+  databricks-llama-3-3-70b:
+    provider: Databricks (pay-per-token model serving)
+    input: 0.50
+    output: 1.50
+    source: https://www.databricks.com/product/pricing/foundation-model-serving
+    quote: "Llama 3.3 70B Instruct … 7.143 DBU per 1M input tokens … 21.429 DBU per 1M output tokens"
+    note: "at $0.07 per DBU, the page's example rate for AWS US East (N. Virginia); measured in the usage-assistant lab"
+  databricks-gpt-oss-120b:
+    provider: Databricks (pay-per-token model serving)
+    input: 0.15
+    output: 0.60
+    source: https://www.databricks.com/product/pricing/foundation-model-serving
+    quote: "GPT-OSS-120B … 2.143 DBU per 1M input tokens … 8.571 DBU per 1M output tokens"
+    note: "at $0.07 per DBU, as above; a reasoning model, so its output includes reasoning tokens"
 
 gpus:
   g6-xlarge:

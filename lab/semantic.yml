@@ -1,0 +1,59 @@
+# The semantic layer for the usage mart: what the business means by its words, so a model
+# writing SQL does not have to guess. Given to the "semantic" condition and, as
+# instructions and example SQL, to the Genie space. The "raw" condition gets only the
+# table definitions and today's date.
+
+today: "2026-10-01 (a Thursday)"
+
+periods:
+  - "Weeks start on Monday."
+  - "Last week means Monday 2026-09-21 to Sunday 2026-09-27."
+  - "Last month means September 2026."
+  - "Last quarter, or Q3, means 2026-07-01 to 2026-09-30."
+  - "The last 7 days means 2026-09-24 to 2026-09-30."
+  - "A month or quarter named without a year means 2026."
+  - "The data covers 2026-07-01 to 2026-09-30 only."
+
+vocabulary:
+  - "A feature is an event_type."
+  - "Reports created: event_type 'create_report'. Reports shared: 'share_report'."
+  - "Exports: 'export_csv'. Invites: 'invite_user'. API calls: 'api_call'."
+  - "Logins, or logging in: 'login'. Dashboard views: 'view_dashboard'."
+  - "Mobile, or the mobile apps: platform 'ios' or 'android'. The web app: platform 'web'."
+  - "People, users or active users who used the product: distinct user_id with at least one event."
+  - "Admins, members and viewers are users.role values 'admin', 'member', 'viewer'."
+
+metrics:
+  events: "SUM(events)"
+  active_users: "COUNT(DISTINCT user_id) from user_daily_activity. Never sum a daily count of users across days."
+  average_daily_active_users: >-
+    The number of distinct users on each day, summed over every day of the period, divided
+    by the number of days in the period, including days with no activity. Round to 1 decimal.
+  events_per_active_user: "events divided by active_users over the same period. Round to 1 decimal."
+  share: "100.0 * the part's events / all events, over the same period. Round to 1 decimal."
+  change_percent: "100.0 * (later - earlier) / earlier. Round to 1 decimal."
+
+rules:
+  - "Answer only about the customer's own account."
+  - "Return one row. For a 'which' question, return the item first, then its value."
+  - "If these tables cannot answer the question, reply UNANSWERABLE and nothing else."
+
+examples:
+  - question: "How many reports did we create in July?"
+    sql: >-
+      SELECT SUM(events) AS reports_created FROM user_daily_activity
+      WHERE account_id = {account} AND event_type = 'create_report'
+      AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-07-31'
+  - question: "How many people used the web app last quarter?"
+    sql: >-
+      SELECT COUNT(DISTINCT user_id) AS people FROM user_daily_activity
+      WHERE account_id = {account} AND platform = 'web'
+      AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'
+  - question: "What was our average number of daily active users in August?"
+    sql: >-
+      SELECT ROUND(SUM(daily_users)::numeric / 31, 1) AS average_daily_active_users FROM (
+        SELECT d::date AS day, COUNT(DISTINCT a.user_id) AS daily_users
+        FROM generate_series(DATE '2026-08-01', DATE '2026-08-31', INTERVAL '1 day') AS d
+        LEFT JOIN user_daily_activity AS a
+          ON a.activity_date = d::date AND a.account_id = {account}
+        GROUP BY 1) AS days

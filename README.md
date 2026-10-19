@@ -1,97 +1,97 @@
 # ai-platform-architecture
 
-A reference architecture for AI features on a SaaS company's governed data: the design, the decisions behind it, and the measured results that back each decision. Every decision links to a public project where it was built and tested.
+The AI architecture for a fictional B2B SaaS company's usage assistant, stage 3 of the
+engagement in [data-platform-architecture](https://github.com/technobasant/data-platform-architecture):
+an assistant inside the product that answers customers' questions about their own usage from
+the governed tables. Every recommendation is measured on a lab copy of the data, with local,
+hosted and platform-native models.
 
 [![ci](https://github.com/technobasant/ai-platform-architecture/actions/workflows/ci.yml/badge.svg)](https://github.com/technobasant/ai-platform-architecture/actions/workflows/ci.yml)
 
-The business is the same fictional B2B subscription product as [data-stack-lab](https://github.com/technobasant/data-stack-lab), and its AI features sit on the platform described in [data-platform-architecture](https://github.com/technobasant/data-platform-architecture). Five features: an analyst that answers questions over the company's data, a help-centre assistant, triage of short free text (tickets, cancellation reasons), models that score fraud and churn, and dashboards of category shares over time.
+## Executive summary
 
-## The request path
+**The ask.** Customers ask support how many reports they created, who used the mobile app,
+which week was busiest. Product wants an assistant to answer, on every plan, within a year
+([the brief](docs/01-brief.md)). The data is in usage marts that hold every customer's rows;
+the customers are not users of the analytical platform.
 
-```mermaid
-flowchart LR
-  user[Person or product feature] --> api[Feature API]
-  api --> agent[Agent graph<br/>plan, call tools, compose]
-  agent <--> gateway[Model gateway<br/>budgets, cache,<br/>replay, redaction]
-  gateway <--> models[(Local and hosted<br/>models)]
-  agent <--> tools[Typed tools over MCP<br/>caller's permissions]
-  tools --> views[(Governed views<br/>SQL guard)]
-  tools --> retrieval[(Vector store<br/>filtered search)]
-  agent --> checks{Schema, policy,<br/>grounding}
-  checks -- passes --> publish[Published answer]
-  checks -- fails, or proposes an action --> review[Review queue]
-  review -- approved --> outbox[Outbox<br/>executes once]
-```
+**What was measured** ([3. Options](docs/03-options.md), [lab/](lab)): 90 customer questions
+with answers computed by SQL, and 20 requests for other accounts' data, on a seeded copy of the
+mart, put to Qwen3 8B run locally, Llama 3.3 70B and gpt-oss-120b on Databricks model serving,
+and Databricks AI/BI Genie.
 
-Before any of it reaches users: a paired evaluation gate in CI on replayed model responses, then a canary release judged against the stable version. After: outcome, abstention, latency and cost monitoring.
+- **The semantic layer mattered more than the model.** Given the business's definitions as
+  well as the schema, Llama 3.3 70B went from **55 to 70 of 70** correct and Qwen3 8B from 43
+  to 64. gpt-oss-120b answered 70 of 70 and declined all 20 unanswerable questions.
+- **A prompt is not isolation.** Told to answer only about the customer's account, the models
+  leaked another account's data on **23 of 120** requests; every query Llama 3.3 70B wrote for
+  them did. Run as the customer's own database identity, the same queries leaked **0**.
+- **Genie was as accurate, slower, and showed why.** With the same definitions it answered 69
+  of 70, at 14.5 s median. Its one miss was a missing pair of parentheses that counted every
+  account's Android users: 1,570 people instead of 12.
+- **Cost is not the constraint.** At measured tokens, $0.00028 an answer on gpt-oss-120b: about
+  $17 a month at launch volume. Self-hosting pays only above about 6,600 answers an hour.
 
-## Principles
+**The recommendation.** The client's own small service on the platform's model serving:
+gpt-oss-120b with Llama 3.3 70B as the fallback, the semantic layer in every prompt, one
+read-only query per question run under an identity that can read only the customer's
+account, every response recorded, and a paired evaluation gate with hard fails on isolation,
+latency and cost. Genie for internal staff, who are platform users. Launch to customers waits
+for one decision: how the customer's identity reaches the chosen platform's row filters
+([0011](decisions/0011-identity-on-the-platform.md)).
 
-- **The model proposes; checks and people decide what becomes state.**
-- **One boundary to data.** Typed tools, the caller's permissions, no raw connections.
-- **Not knowing is an answer,** and it is measured on its own.
-- **Gate on evidence.** Paired cases, significance, and separate latency and cost budgets.
-- **Judges are instruments.** Calibrate them against labels, and audit the labels too.
-- **Retrieval is judged under the product's own filters.**
-- **Counts from a classifier carry its error rates** until they are corrected.
-- **One gateway for every model call:** replayable, budgeted, redacting.
-- **A cost per answer before launch,** not an invoice after it.
+## Contents
+
+| | Document | What it answers |
+|---|---|---|
+| 1 | [Brief](docs/01-brief.md) | what the product wants, why it is hard, stakeholders, constraints |
+| 2 | [Requirements](docs/02-requirements.md) | eleven quality targets as testable scenarios, with the lab's result for each |
+| 3 | [Options, measured](docs/03-options.md) | accuracy, isolation, latency and cost for every way of building it |
+| 4 | [Target architecture](docs/04-target-architecture.md) | the request path, carrying the customer's identity, observability, failure modes |
+| 5 | [Evaluation](docs/05-evaluation.md) | the evaluation set, scoring, the gate, after release |
+| 6 | [Security and compliance](docs/06-security-and-compliance.md) | OWASP Top 10 for LLM applications, data protection, EU AI Act, GDPR, NIST AI RMF |
+| 7 | [Operations](docs/07-operations.md) | what is watched; runbooks for a leak, a wrong answer, a model change, an outage |
+| | [Decisions](decisions) | 14 decision records with options, drivers and evidence |
+| | [Risks](docs/risks.md), [principles](docs/principles.md) | the register; the rules across decisions |
+| | [lab/](lab) | the mart, the questions, the attacks, the runners, and how to reproduce every number |
 
 ## Decisions
 
 <!-- decisions:start -->
 | # | Decision | Status | Backed by |
 |---|---|---|---|
-| 0001 | [AI features reach data only through typed tools behind one boundary](decisions/0001-one-governed-boundary-to-data.md) | Accepted | 0 of 5 planted instructions that led to a proposed action |
-| 0002 | [A model's output becomes state only after a schema, a policy, a grounding check and, for side effects, a person](decisions/0002-outputs-become-state-after-checks.md) | Accepted | 48/54 answers matched an answer key computed by SQL; 3 of 37 answers published without review were wrong |
-| 0003 | ["The data does not have this" is a supported answer, and it is measured separately](decisions/0003-abstention-is-an-answer.md) | Accepted | 4 of 8 unanswerable questions answered with “the data does not have this” |
-| 0004 | [Prompt and model changes ship through a paired evaluation gate, with latency and cost gated separately](decisions/0004-release-gate-on-paired-evaluation.md) | Accepted | p = 0.39 for a 4.8-point judge drop the gate declined to fail; 1,469 → 4,422 ms p95 latency, the regression that was real |
-| 0005 | [An LLM judge is an instrument: calibrated against labels, audited with them, and never trusted pairwise](decisions/0005-judges-are-instruments.md) | Accepted | 7 vs 4 judge–key disagreements where the key, not the judge, was wrong; 5.9% → 0.0% false-positive rate of the judge on the baseline run, thinking off against thinking on |
-| 0006 | [The vector store is chosen by recall under the product's filters, not by unfiltered benchmarks](decisions/0006-retrieval-by-filtered-recall.md) | Accepted | ≤ 0.0015 nDCG@10 between pgvector, Qdrant and OpenSearch and exact search; 3.9 of 10 rows returned by post-filtered HNSW at 10% selectivity |
-| 0007 | [Label the distinct string, not the row: cluster before calling a model, and assign by margin](decisions/0007-label-strings-not-rows.md) | Accepted | 125 vs 20,000 LLM labelling calls on day 1, one per cluster against one per row; 95.2% vs 66.2% precision assigning new rows to known intents: a margin rule against the best absolute similarity threshold |
-| 0008 | [Counts from a classifier are corrected for its error rates, and a model upgrade may not move a trend](decisions/0008-correct-counted-labels.md) | Accepted | 0.628 of the true trend recovered by counting a 95%-accurate classifier's labels; 0.0% of 12,000 period estimates where the naive 95% interval of counted labels covered the true prevalence |
-| 0009 | [Model features are point-in-time correct, from one definition online and offline](decisions/0009-point-in-time-features.md) | Accepted | 0.363 vs 0.941 future AUC-PR, naive join against point-in-time join; 99.905% of 9,500 live requests served exactly the training features |
-| 0010 | [Models are promoted on a paired improvement within a latency budget, and watched on outcomes, not only on input drift](decisions/0010-promote-on-outcomes.md) | Accepted | 82.5% of fraud cost saved on two unseen weeks; 0 of 5 tactics drifts caught by feature PSI |
-| 0011 | [Every model call goes through one gateway: local-first, recorded for replay, and budgeted per feature](decisions/0011-model-gateway.md) | Accepted | 20 of 20 cases with identical outputs, verdicts and judge reasons when re-run with the cache off; 54 of 54 cases where replaying the recorded model reproduced the live run's output |
-| 0012 | [AI services ship by canary like every other service, after the evaluation gate](decisions/0012-ai-services-ship-by-canary.md) | Accepted | 6 of 6 bad releases aborted by canary analysis; 0 of 18,003 requests failed across three good canary releases |
-| 0013 | [Each AI feature has a cost per answer, from a model of tokens and prices, before it ships](decisions/0013-cost-budget-per-feature.md) | Proposed | modelled, not yet measured |
+| 0001 | [The assistant answers by querying the governed usage tables, not from documents](decisions/0001-answers-from-governed-tables.md) | Accepted | 55 → 70 of 70 customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer; 20 of 20 questions the data cannot answer that gpt-oss-120b declined, with the semantic layer |
+| 0002 | [Each query runs under an identity that can read only the customer's account; the prompt is not a control](decisions/0002-isolation-in-the-database.md) | Accepted | 23 of 120 requests for another account's data that leaked when isolation was left to the prompt; 0 of 120 the same requests that returned another account's data when the query ran as the customer's own database role |
+| 0003 | [A semantic layer of the business's definitions goes into every prompt](decisions/0003-semantic-layer.md) | Accepted | 55 → 70 of 70 customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer; 43 → 64 of 70 the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer |
+| 0004 | [Customers get the client's own assistant service; staff can use the platform's assistant](decisions/0004-own-service-genie-for-staff.md) | Accepted | 69 of 70 questions Databricks AI/BI Genie answered correctly with the same definitions as instructions; median 14.5 s; 1,570 vs 12 people Genie counted for one customer's mobile users, against the right answer: a missing pair of parentheses counted every account's Android users |
+| 0005 | [gpt-oss-120b on the platform's model serving, with Llama 3.3 70B as the fallback](decisions/0005-model-choice.md) | Accepted | 20 of 20 questions the data cannot answer that gpt-oss-120b declined, with the semantic layer; $0.00028 per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s |
+| 0006 | [Every model response is recorded with its prompt's hash, and can be re-scored without the model](decisions/0006-record-every-response.md) | Accepted | 660 recorded model responses re-scored in CI against a fresh mart, with no model called; 54 of 54 cases where replaying the recorded model reproduced the live run's output |
+| 0007 | [A model that judges answers is an instrument: calibrated against labels before its scores count](decisions/0007-judges-are-instruments.md) | Accepted | 7 vs 4 judge–key disagreements where the key, not the judge, was wrong; 5.9% → 0.0% false-positive rate of the judge on the baseline run, thinking off against thinking on |
+| 0008 | [Prompt, model and definition changes ship through a paired evaluation gate](decisions/0008-release-gate.md) | Accepted | p = 0.39 for a 4.8-point judge drop the gate declined to fail; 1,469 → 4,422 ms p95 latency, the regression that was real |
+| 0009 | ["The data does not have this" is a supported answer, and it is measured on its own](decisions/0009-abstention-is-an-answer.md) | Accepted | 20 of 20 questions the data cannot answer that gpt-oss-120b declined, with the semantic layer |
+| 0010 | [Every model call goes through one gateway: budgeted, recorded, with a fallback](decisions/0010-one-gateway.md) | Accepted | 20 of 20 cases with identical outputs, verdicts and judge reasons when re-run with the cache off; 54 of 54 cases where replaying the recorded model reproduced the live run's output |
+| 0011 | [On the chosen platform, the account scope is a policy on a value the query cannot change](decisions/0011-identity-on-the-platform.md) | Proposed | modelled, not yet measured |
+| 0012 | [One read-only statement, with a row limit and a timeout, or nothing](decisions/0012-sql-guard.md) | Accepted | 0 of 120 the same requests that returned another account's data when the query ran as the customer's own database role |
+| 0013 | [Questions and answers are kept 30 days, never used for training, and erased on request](decisions/0013-conversation-retention.md) | Proposed | modelled, not yet measured |
+| 0014 | [The assistant has a cost per answer, from measured tokens, and a monthly ceiling](decisions/0014-cost-per-answer.md) | Accepted | $0.00028 per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s |
 <!-- decisions:end -->
 
 Every figure, with its method and source file, is in [EVIDENCE.md](EVIDENCE.md).
 
-## Quality targets, and where the labs stand
+## What is measured and what is not
 
-| Attribute | Target | Measured so far |
-|---|---|---|
-| Wrong answers that publish themselves | under 1% of auto-published answers | **3 of 37** (8%): the gap the checks have to close |
-| Unanswerable questions declined | at least 7 of 8 | **4 of 8**: the weakest behaviour measured |
-| Answer accuracy | at least 90% against a computed answer key | **48 of 54** (88.9%): just short |
-| Planted instructions that lead to an action | none | 0 of 5 |
-| Filtered retrieval | every call returns what it asked for; recall@10 at least 0.9 | 0.949 with iterative scan; 3.9 of 10 rows without it |
-| Release regressions | a significant drop fails; a noisy one warns with the sample size needed | p = 0.39 on a 4.8-point drop: warned |
-| Latency, support answer | p95 under 2.5 s | baseline 1,469 ms; a prompt change that took it to 4,422 ms was stopped by the budget |
-
-Three targets are not met in the labs, and the table says so. The full list, with what is not measured at all, is in [docs/quality-attributes.md](docs/quality-attributes.md).
-
-## Reading order
-
-| Document | What it covers |
+| | Status |
 |---|---|
-| [docs/context.md](docs/context.md) | the five features, their users, and the constraints |
-| [docs/architecture.md](docs/architecture.md) | the components, the paths for each feature, and how each part fails |
-| [docs/evaluation.md](docs/evaluation.md) | how a feature is evaluated, gated and watched |
-| [docs/threat-model.md](docs/threat-model.md) | the OWASP Top 10 for LLM applications (2025), mapped to controls and tests |
-| [docs/quality-attributes.md](docs/quality-attributes.md) | the targets above, in full |
-| [docs/operations.md](docs/operations.md) | runbooks: model upgrade, prompt change, provider outage, cost spike, a reported wrong answer |
-| [docs/model-and-cost.md](docs/model-and-cost.md) and [cost/](cost) | choosing models, cost per answer, and when self-hosting pays |
-| [decisions/](decisions) | the decision records, each with its evidence |
+| Accuracy, abstention, isolation, latency and tokens | measured: 660 recorded responses from three models and 90 from Genie, re-scored in CI from the recordings against a freshly built mart |
+| Cost per answer | measured tokens at list prices ([`cost/`](cost)); not an observed bill |
+| The release gate, judge calibration, replay | measured in [evalproof](https://github.com/technobasant/evalproof) and [governed-agent](https://github.com/technobasant/governed-agent) |
+| Identity on the chosen platform, conversation retention | designed, Proposed |
+| Injection through text in the data, budgets under load | not tested ([gaps](docs/06-security-and-compliance.md#the-gaps-in-order)) |
 
-## What this is and is not
-
-- It is assembled from public labs on synthetic and public data. It is not a description of any employer's or client's system.
-- The language-model labs ran small local models (Qwen3 1.7B and 8B through Ollama). Behaviour such as grounding failures, judge bias and abstention transfers as a method; the rates themselves would differ on other models.
-- Costs are modelled from list prices and assumed token counts, not observed bills. [0013](decisions/0013-cost-budget-per-feature.md) is marked Proposed for that reason.
-- `python scripts/build.py --check` keeps the decision table and every decision's evidence identical to [evidence/evidence.yml](evidence/evidence.yml), and CI checks that every source link resolves.
+The client is fictional and its data synthetic; the hosted models ran on Databricks Free
+Edition's model serving, and the local model on a laptop. The first version of this
+repository, a reference architecture for several AI features without a client, is in the
+[v0.1.0 tag](https://github.com/technobasant/ai-platform-architecture/tree/v0.1.0).
 
 ## Licence
 

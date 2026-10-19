@@ -3,7 +3,7 @@
   - each ADR's "Evidence" section, from the ids on its "- Evidence:" line
   - the decision table in README.md and decisions/README.md
   - EVIDENCE.md: every figure, its method, and the file it was measured in
-  - the cost tables in docs/model-and-cost.md, from results/cost.json
+  - the cost tables in docs/03-options.md, from results/cost.json
 
     python scripts/build.py           # write
     python scripts/build.py --check   # fail if anything generated is out of date
@@ -24,8 +24,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 GITHUB = "https://github.com/technobasant"
-SECTIONS = ("## Context", "## Decision", "## Consequences", "## Alternatives considered",
-            "## Evidence")  # fmt: skip
+SECTIONS = ("## Context", "## Decision drivers", "## Options", "## Decision", "## Consequences",
+            "## Revisit when", "## Evidence")  # fmt: skip
+STATUSES = ("Accepted", "Proposed", "Superseded")
 
 
 def source_url(item: dict) -> str:
@@ -96,6 +97,8 @@ def evidence_page(adrs: list[dict], evidence: dict) -> str:
 
 
 MODEL_ORDER = [
+    "databricks-gpt-oss-120b",
+    "databricks-llama-3-3-70b",
     "claude-opus-5-5",
     "claude-sonnet-5",
     "claude-haiku-4-5",
@@ -110,26 +113,27 @@ MODEL_ORDER = [
 
 def cost_tables() -> str:
     r = json.loads((ROOT / "results" / "cost.json").read_text())
-    models = [m for m in MODEL_ORDER if m in r["per_answer"]["support_answer"]]
+    feature = r["break_even_feature"]
+    models = [m for m in MODEL_ORDER if m in r["per_answer"][feature]]
+    volumes = list(next(iter(r["monthly"][feature].values())))
     out = [
         "<!-- cost:start -->",
         f"List prices retrieved {r['prices_retrieved']} ([`cost/prices.yml`](../cost/prices.yml)); "
-        "token counts assumed in [`cost/workloads.yml`](../cost/workloads.yml).",
+        "tokens per answer measured in the lab, question volumes from the brief "
+        "([`cost/workloads.yml`](../cost/workloads.yml)).",
         "",
-        "**Per answer, and per month at the medium tier**",
-        "",
-        "| Model | Analyst answer | Support answer | Analyst, 20,000/month | Support, 100,000/month |",
-        "|---|---:|---:|---:|---:|",
-    ]
+        "| Model | Per answer | " + " | ".join(f"{v.replace('_', ' ')}: {n:,}/month"
+                                           for v, n in VOLUMES.items() if v in volumes) + " |",
+        "|---|---:|" + "---:|" * len(volumes),
+    ]  # fmt: skip
     for m in models:
-        a, s = r["per_answer"]["analyst_answer"][m], r["per_answer"]["support_answer"][m]
-        am, sm = r["monthly"]["analyst_answer"][m]["medium"], r["monthly"]["support_answer"][m]["medium"]
-        out.append(f"| {m} | ${a:.4f} | ${s:.4f} | ${am:,.0f} | ${sm:,.0f} |")
+        cells = " | ".join(f"${r['monthly'][feature][m][v]:,.0f}" for v in volumes)
+        out.append(f"| {m} | ${r['per_answer'][feature][m]:.5f} | {cells} |")
     gpus = list(r["break_even"])
     out += [
         "",
-        "**Self-hosting break-even.** Requests per hour a dedicated instance must serve before it costs "
-        "less than the API, for a support answer. Price arithmetic only.",
+        "**Self-hosting break-even.** Answers per hour a dedicated instance must serve before it costs "
+        "less than paying per token. Price arithmetic only.",
         "",
         "| Model replaced | "
         + " | ".join(f"{g} (${r['break_even'][g]['usd_per_hour']}/h)" for g in gpus)
@@ -140,13 +144,11 @@ def cost_tables() -> str:
         out.append(
             f"| {m} | " + " | ".join(f"{r['break_even'][g]['requests_per_hour'][m]:,}" for g in gpus) + " |"
         )
-    out += ["", "**Triage, day 1** (measured call counts: 20,000 per row, 125 per cluster)", "",
-            "| Model | One call per row | One call per cluster |", "|---|---:|---:|"]  # fmt: skip
-    for m in models:
-        t = r["triage_day1"][m]
-        out.append(f"| {m} | ${t['per_row']:,.2f} | ${t['per_cluster']:,.2f} |")
     out.append("<!-- cost:end -->")
     return "\n".join(out)
+
+
+VOLUMES = {"launch": 60000, "month_12": 150000, "month_36": 600000}
 
 
 def replace_block(text: str, name: str, block: str) -> str:
@@ -170,6 +172,8 @@ def main() -> None:
         for i in a["evidence"]:
             if i not in evidence:
                 problems.append(f"{a['path'].name}: unknown evidence id '{i}'")
+        if a["status"] not in STATUSES:
+            problems.append(f"{a['path'].name}: status must be one of {', '.join(STATUSES)}")
         if a["status"] == "Accepted" and not a["evidence"]:
             problems.append(f"{a['path'].name}: an Accepted decision must cite evidence")
     if problems:
@@ -181,7 +185,7 @@ def main() -> None:
     for path, prefix in ((ROOT / "README.md", "decisions/"), (ROOT / "decisions" / "README.md", "")):
         outputs[path] = replace_block(path.read_text(), "decisions", decision_table(adrs, evidence, prefix))
     outputs[ROOT / "EVIDENCE.md"] = evidence_page(adrs, evidence)
-    guide = ROOT / "docs" / "model-and-cost.md"
+    guide = ROOT / "docs" / "03-options.md"
     outputs[guide] = replace_block(guide.read_text(), "cost", cost_tables())
 
     stale = [p for p, text in outputs.items() if not p.exists() or p.read_text() != text]

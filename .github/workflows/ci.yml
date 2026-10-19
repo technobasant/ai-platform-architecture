@@ -45,3 +45,38 @@ jobs:
         run: uv run python scripts/check_links.py
       - name: Audit the workflows (zizmor)
         run: uvx zizmor@1.30.1 --offline --persona=regular .github/workflows
+
+  # The usage-assistant lab without any model: build the mart from lab/data.sql, check the
+  # question set is the one published, and re-score every recorded response. The results
+  # must come out exactly as published.
+  lab:
+    name: The assistant lab, re-scored from recorded responses
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mart:
+        # postgres:17-bookworm, PostgreSQL 17.11, the image the lab ran on
+        image: postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["55442:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 2s --health-retries 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --locked --group lab
+      - name: Build the mart
+        run: psql -h localhost -p 55442 -U postgres -q -f lab/data.sql
+      - name: The question set is the published one
+        run: uv run python lab/questions.py --check
+      - name: The scoring helpers
+        run: uv run pytest -q tests/test_lab.py
+      - name: Every recorded response, re-scored; the published results, exactly
+        run: |
+          uv run python lab/run.py --replay --check
+          uv run python lab/genie.py --replay --check

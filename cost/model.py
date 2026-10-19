@@ -1,13 +1,13 @@
-"""What AI features cost per answer and per month, from token counts and list prices.
+"""What the usage assistant costs per answer and per month, from its measured token counts
+and list prices.
 
 Three outputs:
 
-  per_answer   USD per answer for each feature on each model
-  monthly      USD per month at the three workload tiers
-  break_even   requests per hour at which a dedicated GPU instance costs the same as the
-               API: arithmetic on prices only. Whether one instance can serve that rate,
-               with a model good enough for the feature, is not measured here.
-  triage       day-1 labelling cost, one call per row against one per cluster
+  per_answer   USD per answer on each priced model
+  monthly      USD per month at the brief's question volumes
+  break_even   answers per hour at which a dedicated GPU instance costs the same as paying
+               per token: arithmetic on prices only. Whether one instance can serve that
+               rate, with a model good enough for the feature, is not measured here.
 
     python cost/model.py            # print, and write results/cost.json
     python cost/model.py --check    # fail if results/cost.json is out of date
@@ -66,17 +66,8 @@ def run() -> dict:
         }
         for gpu, g in prices["gpus"].items()
     }
-    t = workloads["triage_day1"]
-    triage = {
-        m: {
-            way: round(call_cost(models[m], s["input_tokens"], s["output_tokens"]) * s["calls"], 2)
-            for way, s in t.items()
-        }  # fmt: skip
-        for m in models
-    }
     return {"prices_retrieved": prices["retrieved"], "per_answer": per_answer, "monthly": monthly,
-            "break_even_feature": workloads["break_even_feature"], "break_even": break_even,
-            "triage_day1": triage}  # fmt: skip
+            "break_even_feature": workloads["break_even_feature"], "break_even": break_even}  # fmt: skip
 
 
 def report(r: dict) -> str:
@@ -89,9 +80,6 @@ def report(r: dict) -> str:
     for gpu, b in r["break_even"].items():
         cells = ", ".join(f"{m} {n:,}" for m, n in b["requests_per_hour"].items())
         lines.append(f"  {gpu} (${b['usd_per_hour']}/h): {cells}")
-    lines += ["", "Triage, day 1: per row vs per cluster"]
-    for m, t in r["triage_day1"].items():
-        lines.append(f"  {m:<24} ${t['per_row']:>7.2f} vs ${t['per_cluster']:.2f}")
     return "\n".join(lines)
 
 

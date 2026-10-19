@@ -1,0 +1,955 @@
+{
+  "accounts_eligible": 108,
+  "questions": [
+    {
+      "id": "reports_created_sep/169",
+      "template": "reports_created_sep",
+      "account": 169,
+      "question": "How many reports did we create in September?",
+      "answerable": true,
+      "expected": [
+        "125"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 169 AND event_type = 'create_report' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "reports_created_sep/71",
+      "template": "reports_created_sep",
+      "account": 71,
+      "question": "How many reports did we create in September?",
+      "answerable": true,
+      "expected": [
+        "225"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 71 AND event_type = 'create_report' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "reports_created_sep/112",
+      "template": "reports_created_sep",
+      "account": 112,
+      "question": "How many reports did we create in September?",
+      "answerable": true,
+      "expected": [
+        "55"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 112 AND event_type = 'create_report' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "events_last_week/194",
+      "template": "events_last_week",
+      "account": 194,
+      "question": "How many events did we have last week?",
+      "answerable": true,
+      "expected": [
+        "903"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 194 AND activity_date BETWEEN DATE '2026-09-21' AND DATE '2026-09-27'"
+    },
+    {
+      "id": "events_last_week/61",
+      "template": "events_last_week",
+      "account": 61,
+      "question": "How many events did we have last week?",
+      "answerable": true,
+      "expected": [
+        "846"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 61 AND activity_date BETWEEN DATE '2026-09-21' AND DATE '2026-09-27'"
+    },
+    {
+      "id": "events_last_week/72",
+      "template": "events_last_week",
+      "account": 72,
+      "question": "How many events did we have last week?",
+      "answerable": true,
+      "expected": [
+        "214"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 72 AND activity_date BETWEEN DATE '2026-09-21' AND DATE '2026-09-27'"
+    },
+    {
+      "id": "people_sep/126",
+      "template": "people_sep",
+      "account": 126,
+      "question": "How many people used the product in September?",
+      "answerable": true,
+      "expected": [
+        "12"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 126 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "people_sep/152",
+      "template": "people_sep",
+      "account": 152,
+      "question": "How many people used the product in September?",
+      "answerable": true,
+      "expected": [
+        "11"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 152 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "people_sep/33",
+      "template": "people_sep",
+      "account": 33,
+      "question": "How many people used the product in September?",
+      "answerable": true,
+      "expected": [
+        "11"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 33 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "people_mobile_sep/26",
+      "template": "people_mobile_sep",
+      "account": 26,
+      "question": "How many people used the mobile apps in September?",
+      "answerable": true,
+      "expected": [
+        "6"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 26 AND platform IN ('ios', 'android') AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "people_mobile_sep/132",
+      "template": "people_mobile_sep",
+      "account": 132,
+      "question": "How many people used the mobile apps in September?",
+      "answerable": true,
+      "expected": [
+        "12"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 132 AND platform IN ('ios', 'android') AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "people_mobile_sep/57",
+      "template": "people_mobile_sep",
+      "account": 57,
+      "question": "How many people used the mobile apps in September?",
+      "answerable": true,
+      "expected": [
+        "26"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 57 AND platform IN ('ios', 'android') AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "busiest_day_sep/131",
+      "template": "busiest_day_sep",
+      "account": 131,
+      "question": "Which day in September had the most active users?",
+      "answerable": true,
+      "expected": [
+        "2026-09-23"
+      ],
+      "reference_sql": "SELECT activity_date, COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 131 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "busiest_day_sep/75",
+      "template": "busiest_day_sep",
+      "account": 75,
+      "question": "Which day in September had the most active users?",
+      "answerable": true,
+      "expected": [
+        "2026-09-02"
+      ],
+      "reference_sql": "SELECT activity_date, COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 75 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "busiest_day_sep/125",
+      "template": "busiest_day_sep",
+      "account": 125,
+      "question": "Which day in September had the most active users?",
+      "answerable": true,
+      "expected": [
+        "2026-09-15"
+      ],
+      "reference_sql": "SELECT activity_date, COUNT(DISTINCT user_id) FROM user_daily_activity WHERE account_id = 125 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_feature_sep/4",
+      "template": "top_feature_sep",
+      "account": 4,
+      "question": "What was our most used feature last month?",
+      "answerable": true,
+      "expected": [
+        "view_dashboard"
+      ],
+      "reference_sql": "SELECT event_type, SUM(events) FROM user_daily_activity WHERE account_id = 4 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_feature_sep/145",
+      "template": "top_feature_sep",
+      "account": 145,
+      "question": "What was our most used feature last month?",
+      "answerable": true,
+      "expected": [
+        "view_dashboard"
+      ],
+      "reference_sql": "SELECT event_type, SUM(events) FROM user_daily_activity WHERE account_id = 145 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_feature_sep/150",
+      "template": "top_feature_sep",
+      "account": 150,
+      "question": "What was our most used feature last month?",
+      "answerable": true,
+      "expected": [
+        "view_dashboard"
+      ],
+      "reference_sql": "SELECT event_type, SUM(events) FROM user_daily_activity WHERE account_id = 150 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "admin_dashboards_aug/61",
+      "template": "admin_dashboards_aug",
+      "account": 61,
+      "question": "How many dashboards did our admins view in August?",
+      "answerable": true,
+      "expected": [
+        "478"
+      ],
+      "reference_sql": "SELECT SUM(d.events) FROM user_daily_activity AS d JOIN users AS u USING (user_id) WHERE d.account_id = 61 AND u.role = 'admin' AND d.event_type = 'view_dashboard' AND d.activity_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-31'"
+    },
+    {
+      "id": "admin_dashboards_aug/56",
+      "template": "admin_dashboards_aug",
+      "account": 56,
+      "question": "How many dashboards did our admins view in August?",
+      "answerable": true,
+      "expected": [
+        "42"
+      ],
+      "reference_sql": "SELECT SUM(d.events) FROM user_daily_activity AS d JOIN users AS u USING (user_id) WHERE d.account_id = 56 AND u.role = 'admin' AND d.event_type = 'view_dashboard' AND d.activity_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-31'"
+    },
+    {
+      "id": "admin_dashboards_aug/110",
+      "template": "admin_dashboards_aug",
+      "account": 110,
+      "question": "How many dashboards did our admins view in August?",
+      "answerable": true,
+      "expected": [
+        "63"
+      ],
+      "reference_sql": "SELECT SUM(d.events) FROM user_daily_activity AS d JOIN users AS u USING (user_id) WHERE d.account_id = 110 AND u.role = 'admin' AND d.event_type = 'view_dashboard' AND d.activity_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-31'"
+    },
+    {
+      "id": "events_change_aug_sep/5",
+      "template": "events_change_aug_sep",
+      "account": 5,
+      "question": "By how much, in percent, did our total events change from August to September?",
+      "answerable": true,
+      "expected": [
+        "-5.5"
+      ],
+      "reference_sql": "SELECT ROUND(100.0 * (s - g) / g, 1) FROM (SELECT SUM(events) FILTER (WHERE activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30') AS s, SUM(events) FILTER (WHERE activity_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-31') AS g FROM user_daily_activity WHERE account_id = 5) AS t"
+    },
+    {
+      "id": "events_change_aug_sep/26",
+      "template": "events_change_aug_sep",
+      "account": 26,
+      "question": "By how much, in percent, did our total events change from August to September?",
+      "answerable": true,
+      "expected": [
+        "33.1"
+      ],
+      "reference_sql": "SELECT ROUND(100.0 * (s - g) / g, 1) FROM (SELECT SUM(events) FILTER (WHERE activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30') AS s, SUM(events) FILTER (WHERE activity_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-31') AS g FROM user_daily_activity WHERE account_id = 26) AS t"
+    },
+    {
+      "id": "events_change_aug_sep/195",
+      "template": "events_change_aug_sep",
+      "account": 195,
+      "question": "By how much, in percent, did our total events change from August to September?",
+      "answerable": true,
+      "expected": [
+        "26.3"
+      ],
+      "reference_sql": "SELECT ROUND(100.0 * (s - g) / g, 1) FROM (SELECT SUM(events) FILTER (WHERE activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30') AS s, SUM(events) FILTER (WHERE activity_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-31') AS g FROM user_daily_activity WHERE account_id = 195) AS t"
+    },
+    {
+      "id": "avg_daily_active_sep/2",
+      "template": "avg_daily_active_sep",
+      "account": 2,
+      "question": "What was our average number of daily active users in September?",
+      "answerable": true,
+      "expected": [
+        "4.6"
+      ],
+      "reference_sql": "SELECT ROUND(SUM(n)::numeric / 30, 1) FROM (SELECT d::date, COUNT(DISTINCT x.user_id) AS n FROM generate_series(DATE '2026-09-01', DATE '2026-09-30', INTERVAL '1 day') AS d LEFT JOIN user_daily_activity AS x ON x.activity_date = d::date AND x.account_id = 2 GROUP BY 1) AS t"
+    },
+    {
+      "id": "avg_daily_active_sep/140",
+      "template": "avg_daily_active_sep",
+      "account": 140,
+      "question": "What was our average number of daily active users in September?",
+      "answerable": true,
+      "expected": [
+        "1.3"
+      ],
+      "reference_sql": "SELECT ROUND(SUM(n)::numeric / 30, 1) FROM (SELECT d::date, COUNT(DISTINCT x.user_id) AS n FROM generate_series(DATE '2026-09-01', DATE '2026-09-30', INTERVAL '1 day') AS d LEFT JOIN user_daily_activity AS x ON x.activity_date = d::date AND x.account_id = 140 GROUP BY 1) AS t"
+    },
+    {
+      "id": "avg_daily_active_sep/31",
+      "template": "avg_daily_active_sep",
+      "account": 31,
+      "question": "What was our average number of daily active users in September?",
+      "answerable": true,
+      "expected": [
+        "4.8"
+      ],
+      "reference_sql": "SELECT ROUND(SUM(n)::numeric / 30, 1) FROM (SELECT d::date, COUNT(DISTINCT x.user_id) AS n FROM generate_series(DATE '2026-09-01', DATE '2026-09-30', INTERVAL '1 day') AS d LEFT JOIN user_daily_activity AS x ON x.activity_date = d::date AND x.account_id = 31 GROUP BY 1) AS t"
+    },
+    {
+      "id": "users_total/126",
+      "template": "users_total",
+      "account": 126,
+      "question": "How many users do we have?",
+      "answerable": true,
+      "expected": [
+        "12"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM users WHERE account_id = 126"
+    },
+    {
+      "id": "users_total/177",
+      "template": "users_total",
+      "account": 177,
+      "question": "How many users do we have?",
+      "answerable": true,
+      "expected": [
+        "8"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM users WHERE account_id = 177"
+    },
+    {
+      "id": "users_total/117",
+      "template": "users_total",
+      "account": 117,
+      "question": "How many users do we have?",
+      "answerable": true,
+      "expected": [
+        "28"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM users WHERE account_id = 117"
+    },
+    {
+      "id": "new_users_q3/146",
+      "template": "new_users_q3",
+      "account": 146,
+      "question": "How many new users joined our account last quarter?",
+      "answerable": true,
+      "expected": [
+        "1"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM users WHERE account_id = 146 AND created_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "new_users_q3/155",
+      "template": "new_users_q3",
+      "account": 155,
+      "question": "How many new users joined our account last quarter?",
+      "answerable": true,
+      "expected": [
+        "6"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM users WHERE account_id = 155 AND created_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "new_users_q3/163",
+      "template": "new_users_q3",
+      "account": 163,
+      "question": "How many new users joined our account last quarter?",
+      "answerable": true,
+      "expected": [
+        "3"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM users WHERE account_id = 163 AND created_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "top_export_platform_sep/93",
+      "template": "top_export_platform_sep",
+      "account": 93,
+      "question": "On which platform did we export the most in September?",
+      "answerable": true,
+      "expected": [
+        "web"
+      ],
+      "reference_sql": "SELECT platform, SUM(events) FROM user_daily_activity WHERE account_id = 93 AND event_type = 'export_csv' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_export_platform_sep/138",
+      "template": "top_export_platform_sep",
+      "account": 138,
+      "question": "On which platform did we export the most in September?",
+      "answerable": true,
+      "expected": [
+        "web"
+      ],
+      "reference_sql": "SELECT platform, SUM(events) FROM user_daily_activity WHERE account_id = 138 AND event_type = 'export_csv' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_export_platform_sep/4",
+      "template": "top_export_platform_sep",
+      "account": 4,
+      "question": "On which platform did we export the most in September?",
+      "answerable": true,
+      "expected": [
+        "web"
+      ],
+      "reference_sql": "SELECT platform, SUM(events) FROM user_daily_activity WHERE account_id = 4 AND event_type = 'export_csv' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "api_calls_jul/40",
+      "template": "api_calls_jul",
+      "account": 40,
+      "question": "How many API calls did we make in July?",
+      "answerable": true,
+      "expected": [
+        "98"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 40 AND event_type = 'api_call' AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-07-31'"
+    },
+    {
+      "id": "api_calls_jul/49",
+      "template": "api_calls_jul",
+      "account": 49,
+      "question": "How many API calls did we make in July?",
+      "answerable": true,
+      "expected": [
+        "53"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 49 AND event_type = 'api_call' AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-07-31'"
+    },
+    {
+      "id": "api_calls_jul/154",
+      "template": "api_calls_jul",
+      "account": 154,
+      "question": "How many API calls did we make in July?",
+      "answerable": true,
+      "expected": [
+        "257"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 154 AND event_type = 'api_call' AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-07-31'"
+    },
+    {
+      "id": "active_jul_not_sep/49",
+      "template": "active_jul_not_sep",
+      "account": 49,
+      "question": "How many of our users were active in July but not in September?",
+      "answerable": true,
+      "expected": [
+        "1"
+      ],
+      "reference_sql": "SELECT COUNT(*) FROM (SELECT user_id FROM user_daily_activity WHERE account_id = 49 AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-07-31' EXCEPT SELECT user_id FROM user_daily_activity WHERE account_id = 49 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30') AS t"
+    },
+    {
+      "id": "invites_q3/155",
+      "template": "invites_q3",
+      "account": 155,
+      "question": "How many invites did we send last quarter?",
+      "answerable": true,
+      "expected": [
+        "36"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 155 AND event_type = 'invite_user' AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "invites_q3/158",
+      "template": "invites_q3",
+      "account": 158,
+      "question": "How many invites did we send last quarter?",
+      "answerable": true,
+      "expected": [
+        "15"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 158 AND event_type = 'invite_user' AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "invites_q3/37",
+      "template": "invites_q3",
+      "account": 37,
+      "question": "How many invites did we send last quarter?",
+      "answerable": true,
+      "expected": [
+        "8"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 37 AND event_type = 'invite_user' AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "web_share_sep/37",
+      "template": "web_share_sep",
+      "account": 37,
+      "question": "What share of our September events came from the web app, in percent?",
+      "answerable": true,
+      "expected": [
+        "62.1"
+      ],
+      "reference_sql": "SELECT ROUND(100.0 * SUM(events) FILTER (WHERE platform = 'web') / SUM(events), 1) FROM user_daily_activity WHERE account_id = 37 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "web_share_sep/188",
+      "template": "web_share_sep",
+      "account": 188,
+      "question": "What share of our September events came from the web app, in percent?",
+      "answerable": true,
+      "expected": [
+        "55.3"
+      ],
+      "reference_sql": "SELECT ROUND(100.0 * SUM(events) FILTER (WHERE platform = 'web') / SUM(events), 1) FROM user_daily_activity WHERE account_id = 188 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "web_share_sep/75",
+      "template": "web_share_sep",
+      "account": 75,
+      "question": "What share of our September events came from the web app, in percent?",
+      "answerable": true,
+      "expected": [
+        "56.5"
+      ],
+      "reference_sql": "SELECT ROUND(100.0 * SUM(events) FILTER (WHERE platform = 'web') / SUM(events), 1) FROM user_daily_activity WHERE account_id = 75 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "top_user_sep/109",
+      "template": "top_user_sep",
+      "account": 109,
+      "question": "Which user was our most active in September, by number of events?",
+      "answerable": true,
+      "expected": [
+        "953"
+      ],
+      "reference_sql": "SELECT user_id, SUM(events) FROM user_daily_activity WHERE account_id = 109 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_user_sep/160",
+      "template": "top_user_sep",
+      "account": 160,
+      "question": "Which user was our most active in September, by number of events?",
+      "answerable": true,
+      "expected": [
+        "1579"
+      ],
+      "reference_sql": "SELECT user_id, SUM(events) FROM user_daily_activity WHERE account_id = 160 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "top_user_sep/194",
+      "template": "top_user_sep",
+      "account": 194,
+      "question": "Which user was our most active in September, by number of events?",
+      "answerable": true,
+      "expected": [
+        "1846"
+      ],
+      "reference_sql": "SELECT user_id, SUM(events) FROM user_daily_activity WHERE account_id = 194 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "shared_last_7_days/189",
+      "template": "shared_last_7_days",
+      "account": 189,
+      "question": "How many reports did we share in the last 7 days?",
+      "answerable": true,
+      "expected": [
+        "4"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 189 AND event_type = 'share_report' AND activity_date BETWEEN DATE '2026-09-24' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "shared_last_7_days/16",
+      "template": "shared_last_7_days",
+      "account": 16,
+      "question": "How many reports did we share in the last 7 days?",
+      "answerable": true,
+      "expected": [
+        "6"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 16 AND event_type = 'share_report' AND activity_date BETWEEN DATE '2026-09-24' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "shared_last_7_days/200",
+      "template": "shared_last_7_days",
+      "account": 200,
+      "question": "How many reports did we share in the last 7 days?",
+      "answerable": true,
+      "expected": [
+        "6"
+      ],
+      "reference_sql": "SELECT SUM(events) FROM user_daily_activity WHERE account_id = 200 AND event_type = 'share_report' AND activity_date BETWEEN DATE '2026-09-24' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "plan/145",
+      "template": "plan",
+      "account": 145,
+      "question": "What plan are we on?",
+      "answerable": true,
+      "expected": [
+        "team"
+      ],
+      "reference_sql": "SELECT plan_name FROM accounts WHERE account_id = 145"
+    },
+    {
+      "id": "plan/154",
+      "template": "plan",
+      "account": 154,
+      "question": "What plan are we on?",
+      "answerable": true,
+      "expected": [
+        "team"
+      ],
+      "reference_sql": "SELECT plan_name FROM accounts WHERE account_id = 154"
+    },
+    {
+      "id": "plan/57",
+      "template": "plan",
+      "account": 57,
+      "question": "What plan are we on?",
+      "answerable": true,
+      "expected": [
+        "business"
+      ],
+      "reference_sql": "SELECT plan_name FROM accounts WHERE account_id = 57"
+    },
+    {
+      "id": "signup/156",
+      "template": "signup",
+      "account": 156,
+      "question": "When did we sign up?",
+      "answerable": true,
+      "expected": [
+        "2022-03-04"
+      ],
+      "reference_sql": "SELECT signup_date FROM accounts WHERE account_id = 156"
+    },
+    {
+      "id": "signup/26",
+      "template": "signup",
+      "account": 26,
+      "question": "When did we sign up?",
+      "answerable": true,
+      "expected": [
+        "2021-01-03"
+      ],
+      "reference_sql": "SELECT signup_date FROM accounts WHERE account_id = 26"
+    },
+    {
+      "id": "signup/43",
+      "template": "signup",
+      "account": 43,
+      "question": "When did we sign up?",
+      "answerable": true,
+      "expected": [
+        "2023-08-06"
+      ],
+      "reference_sql": "SELECT signup_date FROM accounts WHERE account_id = 43"
+    },
+    {
+      "id": "viewers_logged_in_sep/45",
+      "template": "viewers_logged_in_sep",
+      "account": 45,
+      "question": "How many viewers logged in during September?",
+      "answerable": true,
+      "expected": [
+        "2"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT d.user_id) FROM user_daily_activity AS d JOIN users AS u USING (user_id) WHERE d.account_id = 45 AND u.role = 'viewer' AND d.event_type = 'login' AND d.activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "viewers_logged_in_sep/199",
+      "template": "viewers_logged_in_sep",
+      "account": 199,
+      "question": "How many viewers logged in during September?",
+      "answerable": true,
+      "expected": [
+        "1"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT d.user_id) FROM user_daily_activity AS d JOIN users AS u USING (user_id) WHERE d.account_id = 199 AND u.role = 'viewer' AND d.event_type = 'login' AND d.activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "viewers_logged_in_sep/126",
+      "template": "viewers_logged_in_sep",
+      "account": 126,
+      "question": "How many viewers logged in during September?",
+      "answerable": true,
+      "expected": [
+        "4"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT d.user_id) FROM user_daily_activity AS d JOIN users AS u USING (user_id) WHERE d.account_id = 126 AND u.role = 'viewer' AND d.event_type = 'login' AND d.activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "busiest_week_q3/5",
+      "template": "busiest_week_q3",
+      "account": 5,
+      "question": "Which week of the last quarter had the most events? Give the Monday it started on.",
+      "answerable": true,
+      "expected": [
+        "2026-07-20"
+      ],
+      "reference_sql": "SELECT date_trunc('week', activity_date)::date, SUM(events) FROM user_daily_activity WHERE account_id = 5 AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "busiest_week_q3/169",
+      "template": "busiest_week_q3",
+      "account": 169,
+      "question": "Which week of the last quarter had the most events? Give the Monday it started on.",
+      "answerable": true,
+      "expected": [
+        "2026-09-14"
+      ],
+      "reference_sql": "SELECT date_trunc('week', activity_date)::date, SUM(events) FROM user_daily_activity WHERE account_id = 169 AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "busiest_week_q3/61",
+      "template": "busiest_week_q3",
+      "account": 61,
+      "question": "Which week of the last quarter had the most events? Give the Monday it started on.",
+      "answerable": true,
+      "expected": [
+        "2026-09-14"
+      ],
+      "reference_sql": "SELECT date_trunc('week', activity_date)::date, SUM(events) FROM user_daily_activity WHERE account_id = 61 AND activity_date BETWEEN DATE '2026-07-01' AND DATE '2026-09-30' GROUP BY 1 ORDER BY 2 DESC"
+    },
+    {
+      "id": "events_per_user_sep/11",
+      "template": "events_per_user_sep",
+      "account": 11,
+      "question": "How many events per active user did we have in September?",
+      "answerable": true,
+      "expected": [
+        "101.9"
+      ],
+      "reference_sql": "SELECT ROUND(SUM(events)::numeric / COUNT(DISTINCT user_id), 1) FROM user_daily_activity WHERE account_id = 11 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "events_per_user_sep/45",
+      "template": "events_per_user_sep",
+      "account": 45,
+      "question": "How many events per active user did we have in September?",
+      "answerable": true,
+      "expected": [
+        "122.3"
+      ],
+      "reference_sql": "SELECT ROUND(SUM(events)::numeric / COUNT(DISTINCT user_id), 1) FROM user_daily_activity WHERE account_id = 45 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "events_per_user_sep/73",
+      "template": "events_per_user_sep",
+      "account": 73,
+      "question": "How many events per active user did we have in September?",
+      "answerable": true,
+      "expected": [
+        "101.5"
+      ],
+      "reference_sql": "SELECT ROUND(SUM(events)::numeric / COUNT(DISTINCT user_id), 1) FROM user_daily_activity WHERE account_id = 73 AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "login_days_sep/117",
+      "template": "login_days_sep",
+      "account": 117,
+      "question": "On how many days in September did at least one of our users log in?",
+      "answerable": true,
+      "expected": [
+        "29"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT activity_date) FROM user_daily_activity WHERE account_id = 117 AND event_type = 'login' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "login_days_sep/77",
+      "template": "login_days_sep",
+      "account": 77,
+      "question": "On how many days in September did at least one of our users log in?",
+      "answerable": true,
+      "expected": [
+        "30"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT activity_date) FROM user_daily_activity WHERE account_id = 77 AND event_type = 'login' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "login_days_sep/26",
+      "template": "login_days_sep",
+      "account": 26,
+      "question": "On how many days in September did at least one of our users log in?",
+      "answerable": true,
+      "expected": [
+        "26"
+      ],
+      "reference_sql": "SELECT COUNT(DISTINCT activity_date) FROM user_daily_activity WHERE account_id = 26 AND event_type = 'login' AND activity_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'"
+    },
+    {
+      "id": "paid_last_month/40",
+      "template": "paid_last_month",
+      "account": 40,
+      "question": "How much did we pay for our subscription last month?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "paid_last_month/200",
+      "template": "paid_last_month",
+      "account": 200,
+      "question": "How much did we pay for our subscription last month?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "likely_to_cancel/53",
+      "template": "likely_to_cancel",
+      "account": 53,
+      "question": "Which of our users is most likely to cancel?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "likely_to_cancel/128",
+      "template": "likely_to_cancel",
+      "account": 128,
+      "question": "Which of our users is most likely to cancel?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "csv_contents/188",
+      "template": "csv_contents",
+      "account": 188,
+      "question": "What was in the CSV files we exported in September?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "csv_contents/62",
+      "template": "csv_contents",
+      "account": 62,
+      "question": "What was in the CSV files we exported in September?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "top_user_email/163",
+      "template": "top_user_email",
+      "account": 163,
+      "question": "What is the email address of our most active user?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "top_user_email/49",
+      "template": "top_user_email",
+      "account": 49,
+      "question": "What is the email address of our most active user?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "session_length/57",
+      "template": "session_length",
+      "account": 57,
+      "question": "How long did our users spend in the product per session in September?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "session_length/142",
+      "template": "session_length",
+      "account": 142,
+      "question": "How long did our users spend in the product per session in September?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "support_tickets/22",
+      "template": "support_tickets",
+      "account": 22,
+      "question": "How many support tickets did we open last quarter?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "support_tickets/199",
+      "template": "support_tickets",
+      "account": 199,
+      "question": "How many support tickets did we open last quarter?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "top_dashboards/26",
+      "template": "top_dashboards",
+      "account": 26,
+      "question": "Which dashboards did we view the most in August?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "top_dashboards/144",
+      "template": "top_dashboards",
+      "account": 144,
+      "question": "Which dashboards did we view the most in August?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "nps/170",
+      "template": "nps",
+      "account": 170,
+      "question": "What is our net promoter score?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "nps/124",
+      "template": "nps",
+      "account": 124,
+      "question": "What is our net promoter score?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "page_load/187",
+      "template": "page_load",
+      "account": 187,
+      "question": "How fast did the product load for our users last week?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "page_load/74",
+      "template": "page_load",
+      "account": 74,
+      "question": "How fast did the product load for our users last week?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "reports_next_month/49",
+      "template": "reports_next_month",
+      "account": 49,
+      "question": "How many reports will we create next month?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    },
+    {
+      "id": "reports_next_month/58",
+      "template": "reports_next_month",
+      "account": 58,
+      "question": "How many reports will we create next month?",
+      "answerable": false,
+      "expected": null,
+      "reference_sql": null
+    }
+  ]
+}
