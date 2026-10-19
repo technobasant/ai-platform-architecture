@@ -18,7 +18,7 @@ today, and support answers them by hand from the BI tool.
 |---|---|
 | Who asks | users of customer accounts, inside the product, signed in |
 | About what | their own account's usage: events, people, features, platforms, roles, over the history the platform holds |
-| How many | about 2,000 questions a day at launch, if a quarter of active accounts ask one a week (an assumption) |
+| How many | about 2,000 questions a day at launch, if a quarter of our roughly 60,000 users (across the 6,000 accounts) ask one a week (an assumption) |
 | Answer | a number or a short list, the definition it used, and the period it covered; or "the data does not have this" |
 | When | a pilot with internal users in month 9, enterprise customers in month 10, every plan in month 12 |
 
