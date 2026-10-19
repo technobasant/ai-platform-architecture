@@ -29,14 +29,22 @@ token, and slower and less accurate.
 ## Decision
 
 gpt-oss-120b on the platform's pay-per-token model serving is the primary model; Llama 3.3
-70B is the gateway's fallback. Both stay in the client's region. Self-hosting is not worth it
-at this volume: a single L40S instance breaks even only at about 6,600 answers an hour.
+70B is the gateway's fallback. Both stay in the client's region. The two are equally accurate
+with the semantic layer (70 of 70); the choice between them rests on cost per answer and on
+the one-question difference in declines (20 of 20 against 19 of 20), which on its own cannot
+rank them. Self-hosting is not worth it at this volume, and the arithmetic does not favour it
+at any realistic volume either: an L4 or L40S GPU cannot hold a 120-billion-parameter model
+at all, so a single GPU instance is not a hosting option for gpt-oss-120b; on hardware that
+could (p5-48xlarge, 8×H100), break-even is about 194,600 answers an hour.
 
 ## Consequences
 
 - At launch volume (60,000 answers a month) the model bill is about $17 a month at list price.
 - gpt-oss-120b is a reasoning model: its output tokens include reasoning, and its latency
   varies more than Llama's.
+- The decline difference (20 of 20 vs 19 of 20) is one data point among several, not by
+  itself a reason to prefer one model: on a single held-out question each, it is within
+  noise; cost and latency carry more of the decision.
 - A model change goes through the gate and re-runs the isolation suite
   ([0008](0008-release-gate.md)).
 
@@ -50,5 +58,5 @@ thousand answers an hour.
 <!-- evidence:start -->
 - **20 of 20** questions the data cannot answer that gpt-oss-120b declined, with the semantic layer. 10 questions about billing, sessions, personal data, tickets and predictions, each asked for two accounts; a declined answer is UNANSWERABLE with no query. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 - **$0.00028** per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s. Mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; $0.15 and $0.60 per million tokens (2.143 and 8.571 DBU at $0.07). Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
-- **43 → 64 of 70** the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer. As above; Ollama on a laptop, temperature 0, thinking off. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
+- **46 → 64 of 70** the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer. As above; Ollama on a laptop, temperature 0, thinking off. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 <!-- evidence:end -->
