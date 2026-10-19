@@ -2,8 +2,8 @@
   "accuracy": {
     "qwen3-8b/raw": {
       "answerable": 70,
-      "correct": 43,
-      "wrong": 24,
+      "correct": 46,
+      "wrong": 21,
       "declined_answerable": 0,
       "sql_errors": 3,
       "unanswerable": 20,
@@ -13,7 +13,7 @@
       "seconds_median": 4.97,
       "seconds_p95": 8.63,
       "usd_per_answer": null,
-      "summary": "43/70 correct, 12/20 unanswerable declined",
+      "summary": "46/70 correct, 12/20 unanswerable declined",
       "log": [
         {
           "id": "reports_created_sep/169",
@@ -460,7 +460,7 @@
           "id": "shared_last_7_days/189",
           "template": "shared_last_7_days",
           "answerable": true,
-          "outcome": "wrong",
+          "outcome": "correct",
           "tokens_in": 344,
           "tokens_out": 49,
           "seconds": 3.74
@@ -469,7 +469,7 @@
           "id": "shared_last_7_days/16",
           "template": "shared_last_7_days",
           "answerable": true,
-          "outcome": "wrong",
+          "outcome": "correct",
           "tokens_in": 342,
           "tokens_out": 48,
           "seconds": 3.71
@@ -478,7 +478,7 @@
           "id": "shared_last_7_days/200",
           "template": "shared_last_7_days",
           "answerable": true,
-          "outcome": "wrong",
+          "outcome": "correct",
           "tokens_in": 344,
           "tokens_out": 49,
           "seconds": 3.89
@@ -3310,8 +3310,8 @@
     },
     "gpt-oss-120b/raw": {
       "answerable": 70,
-      "correct": 63,
-      "wrong": 7,
+      "correct": 65,
+      "wrong": 5,
       "declined_answerable": 0,
       "sql_errors": 0,
       "unanswerable": 20,
@@ -3321,7 +3321,7 @@
       "seconds_median": 3.95,
       "seconds_p95": 8.56,
       "usd_per_answer": 0.000191,
-      "summary": "63/70 correct, 18/20 unanswerable declined",
+      "summary": "65/70 correct, 18/20 unanswerable declined",
       "log": [
         {
           "id": "reports_created_sep/169",
@@ -3768,7 +3768,7 @@
           "id": "shared_last_7_days/189",
           "template": "shared_last_7_days",
           "answerable": true,
-          "outcome": "wrong",
+          "outcome": "correct",
           "tokens_in": 392,
           "tokens_out": 384,
           "seconds": 7.05
@@ -3777,7 +3777,7 @@
           "id": "shared_last_7_days/16",
           "template": "shared_last_7_days",
           "answerable": true,
-          "outcome": "wrong",
+          "outcome": "correct",
           "tokens_in": 392,
           "tokens_out": 372,
           "seconds": 8.43

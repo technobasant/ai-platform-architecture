@@ -68,5 +68,195 @@
       "refused": 0,
       "refusals": []
     }
+  },
+  "escape_corpus": {
+    "escapes": 44,
+    "escapes_refused": 44,
+    "ordinary_shapes": 13,
+    "ordinary_shapes_identical_to_row_level_security": 13,
+    "log": [
+      {
+        "sql": "SELECT query_to_xml('select account_id, count(*) from usage.user_daily_activity group by 1', true, false, '')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT table_to_xml('usage.users', true, false, '')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT schema_to_xml('usage', true, false, '')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT database_to_xml(true, false, '')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT * FROM schema_to_xml('usage', true, false, '') AS x",
+        "outcome": "refused: reads from Anonymous"
+      },
+      {
+        "sql": "SELECT xpath('//account_id/text()', table_to_xml('usage.user_daily_activity', true, false, ''))",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT * FROM XMLTABLE('/x' PASSING table_to_xml('usage.users', true, false, '') COLUMNS a int)",
+        "outcome": "refused: reads from XMLTable"
+      },
+      {
+        "sql": "SELECT ts_stat('select to_tsvector(account_name) from usage.accounts')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT * FROM users, ts_stat('select to_tsvector(account_name) from usage.accounts') AS t",
+        "outcome": "refused: reads from Anonymous"
+      },
+      {
+        "sql": "SELECT cursor_to_xml('c', 10, true, false, '')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT pg_stat_get_live_tuples('usage.users'::regclass)",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT pg_relation_size('usage.user_daily_activity')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT pg_read_file('/etc/passwd')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT current_setting('search_path')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT set_config('search_path', 'pg_catalog', false), count(*) FROM users",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT dblink('dbname=postgres', 'select * from usage.users')",
+        "outcome": "refused: uses Anonymous"
+      },
+      {
+        "sql": "SELECT 'usage.users'::regclass::oid",
+        "outcome": "refused: casts to OID"
+      },
+      {
+        "sql": "SELECT * FROM usage.user_daily_activity",
+        "outcome": "refused: names a schema"
+      },
+      {
+        "sql": "SELECT * FROM postgres.usage.accounts",
+        "outcome": "refused: names a schema"
+      },
+      {
+        "sql": "SELECT * FROM tenant_roles",
+        "outcome": "refused: reads tenant_roles"
+      },
+      {
+        "sql": "SELECT * FROM pg_catalog.pg_tables",
+        "outcome": "refused: names a schema"
+      },
+      {
+        "sql": "SELECT c.relname, c.reltuples FROM pg_class AS c WHERE c.relname = 'users'",
+        "outcome": "refused: reads pg_class"
+      },
+      {
+        "sql": "SELECT 1 UNION ALL TABLE usage.users",
+        "outcome": "refused: cannot be analysed (ParseError)"
+      },
+      {
+        "sql": "SELECT * FROM generate_series(1, (SELECT count(*)::int FROM usage.users)) AS g",
+        "outcome": "refused: names a schema"
+      },
+      {
+        "sql": "SELECT t.* FROM (WITH tenant_roles AS (SELECT 1) SELECT 1) AS s CROSS JOIN tenant_roles AS t",
+        "outcome": "refused: reads tenant_roles"
+      },
+      {
+        "sql": "SELECT c.relname, c.reltuples FROM (WITH pg_class AS (SELECT 1) SELECT 1) AS s, pg_class AS c WHERE c.relname = 'users'",
+        "outcome": "refused: reads pg_class"
+      },
+      {
+        "sql": "SELECT a.query FROM (WITH pg_stat_activity AS (SELECT 1) SELECT 1) AS s, pg_stat_activity AS a",
+        "outcome": "refused: reads pg_stat_activity"
+      },
+      {
+        "sql": "WITH a AS (SELECT * FROM b), b AS (SELECT * FROM tenant_roles) SELECT * FROM a",
+        "outcome": "refused: reads b"
+      },
+      {
+        "sql": "WITH users AS (SELECT * FROM usage.users) SELECT * FROM users",
+        "outcome": "refused: redefines a table it may read"
+      },
+      {
+        "sql": "WITH Users AS (SELECT 1 AS account_id) SELECT * FROM Users",
+        "outcome": "refused: redefines a table it may read"
+      },
+      {
+        "sql": "WITH RECURSIVE r(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM r WHERE n < 3) SELECT * FROM r, users",
+        "outcome": "refused: is recursive"
+      },
+      {
+        "sql": "WITH d AS (DELETE FROM users RETURNING *) SELECT count(*) FROM d",
+        "outcome": "refused: uses Delete"
+      },
+      {
+        "sql": "WITH d AS (UPDATE accounts SET plan_name = 'x' RETURNING *) SELECT count(*) FROM d",
+        "outcome": "refused: uses Update"
+      },
+      {
+        "sql": "SELECT * INTO stolen FROM users",
+        "outcome": "refused: uses Into"
+      },
+      {
+        "sql": "DELETE FROM accounts",
+        "outcome": "refused: not one query"
+      },
+      {
+        "sql": "SELECT * FROM users FOR UPDATE",
+        "outcome": "refused: uses Lock"
+      },
+      {
+        "sql": "SELECT 1; SELECT 2",
+        "outcome": "refused: not one query"
+      },
+      {
+        "sql": "SELECT 'abc",
+        "outcome": "refused: cannot be analysed (TokenError)"
+      },
+      {
+        "sql": "SELECT * FROM ROWS FROM (generate_series(1, 2)) AS g",
+        "outcome": "refused: reads from NoneType"
+      },
+      {
+        "sql": "SELECT E'\\'', (SELECT count(*) FROM usage.users) --'",
+        "outcome": "refused: uses ByteString"
+      },
+      {
+        "sql": "SELECT $$--$$, * FROM usage.users",
+        "outcome": "refused: uses RawString"
+      },
+      {
+        "sql": "SELECT $a$ ' $a$, * FROM usage.users --'",
+        "outcome": "refused: uses RawString"
+      },
+      {
+        "sql": "SELECT * FROM users TABLESAMPLE SYSTEM (50)",
+        "outcome": "refused: uses TableSample"
+      },
+      {
+        "sql": "SELECT * FROM json_each('{}')",
+        "outcome": "refused: reads from Anonymous"
+      }
+    ]
+  },
+  "row_level_security_and_the_catalog": {
+    "users_counted_by_the_customer_role": 14,
+    "users_in_pg_class_read_by_the_customer_role": 1935,
+    "users_in_every_account": 1935,
+    "the_rewrite": "refused: reads pg_class"
   }
 }

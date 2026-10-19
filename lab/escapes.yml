@@ -1,0 +1,113 @@
+# Hand-written queries that try to get past the tool's rewrite (lab/rewrite.py), each of which
+# must be refused, and ordinary shapes that must be scoped and return what row-level security
+# returns. CI checks both lists on every change. The first group is what a review found the
+# first version of the rewrite let through.
+refused:
+  # Functions that run SQL of their own, or read outside the query, as the tool's identity.
+  - sql: SELECT query_to_xml('select account_id, count(*) from usage.user_daily_activity group by 1', true, false, '')
+    why: runs a query of its own, over every account
+  - sql: SELECT table_to_xml('usage.users', true, false, '')
+    why: reads a whole table
+  - sql: SELECT schema_to_xml('usage', true, false, '')
+    why: reads a whole schema
+  - sql: SELECT database_to_xml(true, false, '')
+    why: reads the database
+  - sql: SELECT * FROM schema_to_xml('usage', true, false, '') AS x
+    why: the same, as a table
+  - sql: SELECT xpath('//account_id/text()', table_to_xml('usage.user_daily_activity', true, false, ''))
+    why: reads a whole table, inside another function
+  - sql: SELECT * FROM XMLTABLE('/x' PASSING table_to_xml('usage.users', true, false, '') COLUMNS a int)
+    why: reads a whole table, through XMLTABLE
+  - sql: SELECT ts_stat('select to_tsvector(account_name) from usage.accounts')
+    why: runs a query of its own
+  - sql: SELECT * FROM users, ts_stat('select to_tsvector(account_name) from usage.accounts') AS t
+    why: runs a query of its own, as a table
+  - sql: SELECT cursor_to_xml('c', 10, true, false, '')
+    why: reads an open cursor
+  - sql: SELECT pg_stat_get_live_tuples('usage.users'::regclass)
+    why: every account's row count, from the statistics
+  - sql: SELECT pg_relation_size('usage.user_daily_activity')
+    why: the size of the whole table
+  - sql: SELECT pg_read_file('/etc/passwd')
+    why: reads a file on the server
+  - sql: SELECT current_setting('search_path')
+    why: reads the session's settings
+  - sql: SELECT set_config('search_path', 'pg_catalog', false), count(*) FROM users
+    why: changes the session
+  - sql: SELECT dblink('dbname=postgres', 'select * from usage.users')
+    why: runs a query over another connection
+  - sql: SELECT 'usage.users'::regclass::oid
+    why: a cast to a catalog type
+  # Tables outside the scope.
+  - sql: SELECT * FROM usage.user_daily_activity
+    why: the schema-qualified table, behind the scoped one
+  - sql: SELECT * FROM postgres.usage.accounts
+    why: catalog-qualified
+  - sql: SELECT * FROM tenant_roles
+    why: the map of roles to accounts
+  - sql: SELECT * FROM pg_catalog.pg_tables
+    why: the catalog
+  - sql: SELECT c.relname, c.reltuples FROM pg_class AS c WHERE c.relname = 'users'
+    why: every account's row count, from the catalog
+  - sql: SELECT 1 UNION ALL TABLE usage.users
+    why: the TABLE command on the schema-qualified table
+  - sql: SELECT * FROM generate_series(1, (SELECT count(*)::int FROM usage.users)) AS g
+    why: an allowed table function with a subquery that is not
+  # Names that only look defined: a CTE is visible in its own query, not beside it.
+  - sql: SELECT t.* FROM (WITH tenant_roles AS (SELECT 1) SELECT 1) AS s CROSS JOIN tenant_roles AS t
+    why: the CTE is nested; the outer tenant_roles is the real table
+  - sql: SELECT c.relname, c.reltuples FROM (WITH pg_class AS (SELECT 1) SELECT 1) AS s, pg_class AS c WHERE c.relname = 'users'
+    why: the same, reaching the catalog
+  - sql: SELECT a.query FROM (WITH pg_stat_activity AS (SELECT 1) SELECT 1) AS s, pg_stat_activity AS a
+    why: the same, reaching other sessions' queries
+  - sql: WITH a AS (SELECT * FROM b), b AS (SELECT * FROM tenant_roles) SELECT * FROM a
+    why: a CTE cannot see a later one; b is the real table there
+  - sql: WITH users AS (SELECT * FROM usage.users) SELECT * FROM users
+    why: redefines a scoped name
+  - sql: WITH Users AS (SELECT 1 AS account_id) SELECT * FROM Users
+    why: redefines a scoped name, in capitals
+  - sql: WITH RECURSIVE r(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM r WHERE n < 3) SELECT * FROM r, users
+    why: recursive
+  # Writes, anywhere.
+  - sql: WITH d AS (DELETE FROM users RETURNING *) SELECT count(*) FROM d
+    why: a delete inside a CTE reaches the base table, not the scoped one
+  - sql: WITH d AS (UPDATE accounts SET plan_name = 'x' RETURNING *) SELECT count(*) FROM d
+    why: an update inside a CTE
+  - sql: SELECT * INTO stolen FROM users
+    why: creates a table
+  - sql: DELETE FROM accounts
+    why: not a query
+  - sql: SELECT * FROM users FOR UPDATE
+    why: takes row locks
+  # Statements, quoting and parsing.
+  - sql: SELECT 1; SELECT 2
+    why: two statements
+  - sql: SELECT 'abc
+    why: does not parse
+  - sql: SELECT * FROM ROWS FROM (generate_series(1, 2)) AS g
+    why: a form the checks cannot analyse
+  - sql: SELECT E'\'', (SELECT count(*) FROM usage.users) --'
+    why: an escaped quote that ends the string early
+  - sql: SELECT $$--$$, * FROM usage.users
+    why: a dollar-quoted string hiding a comment marker
+  - sql: SELECT $a$ ' $a$, * FROM usage.users --'
+    why: a tagged dollar-quoted string hiding a quote
+  - sql: SELECT * FROM users TABLESAMPLE SYSTEM (50)
+    why: not on the list; harmless, refused all the same
+  - sql: SELECT * FROM json_each('{}')
+    why: not on the list; harmless, refused all the same
+
+scoped:
+  - SELECT COUNT(*) FROM USERS
+  - SELECT count(*) FROM users UNION ALL SELECT count(*) FROM accounts
+  - (SELECT count(*) FROM users) UNION ALL (SELECT count(*) FROM accounts)
+  - SELECT a.account_id, x.n FROM accounts AS a, LATERAL (SELECT count(*) AS n FROM users AS u WHERE u.account_id = a.account_id) AS x
+  - WITH x AS MATERIALIZED (SELECT * FROM users) SELECT count(*) FROM x
+  - WITH a AS (SELECT user_id FROM users), b AS (SELECT * FROM a) SELECT count(*) FROM b
+  - SELECT d::date, COUNT(DISTINCT u.user_id) FROM generate_series(DATE '2026-09-01', DATE '2026-09-07', INTERVAL '1 day') AS d LEFT JOIN user_daily_activity AS u ON u.activity_date = d::date GROUP BY 1 ORDER BY 1
+  - SELECT account_id, count(*) OVER () FROM users
+  - SELECT count(*) FROM ONLY users
+  - SELECT * FROM (VALUES (1)) AS v(a)
+  - SELECT role, count(*) FILTER (WHERE role = 'admin') FROM users GROUP BY 1 ORDER BY 1
+  - SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM user_daily_activity) AS rows
+  - SELECT event_type, round(100.0 * sum(events) / nullif(sum(sum(events)) OVER (), 0), 1) FROM user_daily_activity GROUP BY 1 ORDER BY 2 DESC

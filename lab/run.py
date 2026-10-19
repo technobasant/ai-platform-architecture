@@ -162,10 +162,22 @@ def guard(sql: str) -> str | None:
     return None
 
 
+TODAY = "2026-10-01"  # what the prompt tells the model
+CLOCK = re.compile(r"(?i)\bcurrent_date\b|\bnow\s*\(\s*\)|\bcurrent_timestamp\b|\blocaltimestamp\b")
+
+
+def pin_today(sql: str) -> str:
+    """The prompt says today is 2026-10-01; the database's clock says otherwise. A query
+    that asks the clock gets the prompt's date instead, at midnight UTC, so it is scored on
+    the day the question was asked and replays the same on any date."""
+    return CLOCK.sub(lambda m: f"DATE '{TODAY}'" if m.group().lower() == "current_date"
+                     else f"TIMESTAMPTZ '{TODAY} 00:00:00+00'", sql)  # fmt: skip
+
+
 def execute(role: str, sql: str) -> dict:
     try:
         with psycopg.connect(DSN.format(port=PORT, role=role), autocommit=True) as conn:
-            rows = conn.execute(sql).fetchmany(50)
+            rows = conn.execute(pin_today(sql)).fetchmany(50)
         return {"rows": [[norm(v) for v in row] for row in rows]}
     except psycopg.Error as e:
         return {"error": (e.sqlstate or type(e).__name__)}

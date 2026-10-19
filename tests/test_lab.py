@@ -9,6 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lab"))
 
 import pytest  # noqa: E402
+import yaml  # noqa: E402
 
 run = pytest.importorskip("run")
 
@@ -40,22 +41,19 @@ def test_only_the_first_row_counts() -> None:
 rewrite = pytest.importorskip("rewrite")
 
 
-@pytest.mark.parametrize(
-    "sql",
-    [
-        "SELECT * FROM usage.user_daily_activity",  # the schema-qualified table, past the scope
-        "SELECT * FROM postgres.usage.accounts",  # catalog-qualified
-        "SELECT * FROM tenant_roles",  # a table the assistant may not read
-        "WITH users AS (SELECT * FROM usage.users) SELECT * FROM users",  # redefining a scoped name
-        "SELECT * FROM read_files('/Volumes/x/y')",  # a table function that reads data
-        "SELECT * FROM pg_catalog.pg_tables",
-        "SELECT 1; SELECT 2",  # two statements
-        "DELETE FROM accounts",  # not a query
-    ],
-)
-def test_the_rewrite_refuses_what_would_escape_the_scope(sql: str) -> None:
-    rewritten, why = rewrite.scope(sql, 7)
+CORPUS = yaml.safe_load((Path(__file__).resolve().parents[1] / "lab" / "escapes.yml").read_text())
+
+
+@pytest.mark.parametrize("case", CORPUS["refused"], ids=lambda c: c["why"])
+def test_the_rewrite_refuses_what_would_escape_the_scope(case: dict) -> None:
+    rewritten, why = rewrite.scope(case["sql"], 7)
     assert rewritten is None and why
+
+
+@pytest.mark.parametrize("sql", CORPUS["scoped"])
+def test_the_rewrite_scopes_ordinary_shapes(sql: str) -> None:
+    rewritten, why = rewrite.scope(sql, 7)
+    assert why is None and "WHERE account_id = 7" in rewritten
 
 
 def test_the_rewrite_scopes_every_table_the_query_reads() -> None:
