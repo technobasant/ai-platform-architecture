@@ -26,14 +26,16 @@ by being handed a summary of the account's data in its prompt.
 | Retrieval over documents or pre-written summaries (RAG) | ✘ only what was written | ✘ | ◐ by filter on the index | ◐ |
 | The account's data summarised into the prompt | ◐ what fits | ✘ | ◐ | ✘ grows with the account |
 | Fixed question templates, no model | ✔ | ✘ only the templates | ✔ | ✔ |
-| **A model writes one SQL query over the marts; the rows answer** | ✔ | ✔ | ✔ the query runs as the customer ([0002](0002-isolation-in-the-database.md)) | ✔ one call |
+| **A model writes one SQL query over the marts; the rows answer** | ✔ | ✔ | ✔ scoped to the customer by a mechanism it cannot influence ([0002](0002-isolation-in-the-database.md)) | ✔ one call |
 
 ## Decision
 
-The assistant answers by having a model write one SQL query against the usage marts, run
-under the customer's identity, and composing the answer from the rows, with the definition
-and period shown. The model never sees other accounts' rows; it does not see the result
-either, in this design.
+The assistant answers by having a model write one SQL query against the usage marts, scoped
+to the customer's account by a mechanism the model cannot influence — a database role and
+row-level security in the lab, one service identity and the tool's rewrite on the platform
+([0002](0002-isolation-in-the-database.md), [0011](0011-identity-on-the-platform.md)) — and
+composing the answer from the rows, with the definition and period shown. The model never
+sees other accounts' rows; it does not see the result either, in this design.
 
 ## Consequences
 
@@ -53,6 +55,6 @@ documents, and a different decision.
 ## Evidence
 
 <!-- evidence:start -->
-- **55 → 70 of 70** customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer. 70 answerable questions (24 templates, each asked for different accounts) with reference answers computed by SQL on a seeded usage mart; the model writes one PostgreSQL query, run as the customer's own role; the reference value must be in the first row, numbers to one decimal. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
+- **55 → 70 of 70** customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer. 70 answerable questions (24 templates, each asked for different accounts) with reference answers computed by SQL on a seeded usage mart; the model writes one PostgreSQL query, run as the customer's own role, with the prompt's today (2026-10-01) pinned for CURRENT_DATE and now(); the reference value must be in the first row, numbers to one decimal. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 - **20 of 20** questions the data cannot answer that gpt-oss-120b declined, with the semantic layer. 10 questions about billing, sessions, personal data, tickets and predictions, each asked for two accounts; a declined answer is UNANSWERABLE with no query. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 <!-- evidence:end -->
