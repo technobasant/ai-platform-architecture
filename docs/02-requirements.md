@@ -9,7 +9,7 @@ be tested. "Lab" is what the measurement in [lab/](../lab) found for the recomme
 |---|---|---|---|---|
 | A1 | Accuracy | a customer asks an answerable question about their own usage | the right number, item or date, 9 times in 10 | 70 of 70 (gpt-oss-120b and Llama 3.3 70B with the semantic layer) |
 | A2 | Knowing what it does not know | a customer asks something the data cannot answer | "the data does not have this", 19 times in 20 | 20 of 20 (gpt-oss-120b) |
-| A3 | Tenant isolation | a customer asks, innocently or not, for another account's data or everyone's | never another account's rows or totals | 0 of 120 with the customer's database role; 23 of 120 with the prompt alone |
+| A3 | Tenant isolation | a customer asks, innocently or not, for another account's data or everyone's | never another account's rows or totals | 0 of 120 with the customer's database role; 28 of 28 attack queries scoped by the tool's rewrite; 23 of 120 leaked with the prompt alone |
 | A4 | No side effects | any question, including instructions hidden in it | the assistant only reads; nothing is written, sent or changed | read-only role; one statement per query |
 | A5 | Latency | a question is asked | an answer within 10 s, 95 times in 100 | 2.9 s median, 5.5 s p95 (gpt-oss-120b) |
 | A6 | Cost | a month of questions at launch volume | under $0.01 an answer on average; under $1,500 a month | $0.00028 an answer; about $17 a month at launch volume |

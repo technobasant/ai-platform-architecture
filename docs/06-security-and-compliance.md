@@ -43,6 +43,7 @@ it, and what has been tested. "Not tested" means designed and not yet exercised.
 
 1. Injection through data: an account name, a report title or any text column carrying
    instructions, in the isolation suite.
-2. Identity on the chosen platform: the policy or the query rewrite that replaces the lab's
-   per-account roles ([0011](../decisions/0011-identity-on-the-platform.md)).
+2. The rewrite on the platform itself: measured on Postgres with the lab's recordings
+   ([0011](../decisions/0011-identity-on-the-platform.md)); to be re-run on the chosen
+   platform's SQL dialect before launch.
 3. Budgets under load: a burst of questions and a looping client against the gateway.

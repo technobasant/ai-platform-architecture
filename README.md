@@ -36,8 +36,9 @@ and Databricks AI/BI Genie.
 gpt-oss-120b with Llama 3.3 70B as the fallback, the semantic layer in every prompt, one
 read-only query per question run under an identity that can read only the customer's
 account, every response recorded, and a paired evaluation gate with hard fails on isolation,
-latency and cost. Genie for internal staff, who are platform users. Launch to customers waits
-for one decision: how the customer's identity reaches the chosen platform's row filters
+latency and cost. Genie for internal staff, who are platform users. On the platform, where a
+row filter cannot read a per-request value, the tool scopes each query by rewriting it onto
+per-account tables: on every recorded query it returned exactly what row-level security did
 ([0011](decisions/0011-identity-on-the-platform.md)).
 
 ## Contents
@@ -70,7 +71,7 @@ for one decision: how the customer's identity reaches the chosen platform's row 
 | 0008 | [Prompt, model and definition changes ship through a paired evaluation gate](decisions/0008-release-gate.md) | Accepted | p = 0.39 for a 4.8-point judge drop the gate declined to fail; 1,469 → 4,422 ms p95 latency, the regression that was real |
 | 0009 | ["The data does not have this" is a supported answer, and it is measured on its own](decisions/0009-abstention-is-an-answer.md) | Accepted | 20 of 20 questions the data cannot answer that gpt-oss-120b declined, with the semantic layer |
 | 0010 | [Every model call goes through one gateway: budgeted, recorded, with a fallback](decisions/0010-one-gateway.md) | Accepted | 20 of 20 cases with identical outputs, verdicts and judge reasons when re-run with the cache off; 54 of 54 cases where replaying the recorded model reproduced the live run's output |
-| 0011 | [On the chosen platform, the account scope is a policy on a value the query cannot change](decisions/0011-identity-on-the-platform.md) | Proposed | modelled, not yet measured |
+| 0011 | [On the platform, the assistant's tool scopes each query by rewriting it onto per-account tables](decisions/0011-identity-on-the-platform.md) | Accepted | 28 of 28 queries the models wrote for the isolation attacks that the tool's rewrite scoped to the customer's rows, exactly as row-level security did, including the 23 that leaked through the prompt; 436 of 436 queries for ordinary questions whose result the rewrite left exactly as row-level security gave it, none refused |
 | 0012 | [One read-only statement, with a row limit and a timeout, or nothing](decisions/0012-sql-guard.md) | Accepted | 0 of 120 the same requests that returned another account's data when the query ran as the customer's own database role |
 | 0013 | [Questions and answers are kept 30 days, never used for training, and erased on request](decisions/0013-conversation-retention.md) | Proposed | modelled, not yet measured |
 | 0014 | [The assistant has a cost per answer, from measured tokens, and a monthly ceiling](decisions/0014-cost-per-answer.md) | Accepted | $0.00028 per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s |
@@ -85,7 +86,8 @@ Every figure, with its method and source file, is in [EVIDENCE.md](EVIDENCE.md).
 | Accuracy, abstention, isolation, latency and tokens | measured: 660 recorded responses from three models and 90 from Genie, re-scored in CI from the recordings against a freshly built mart |
 | Cost per answer | measured tokens at list prices ([`cost/`](cost)); not an observed bill |
 | The release gate, judge calibration, replay | measured in [evalproof](https://github.com/technobasant/evalproof) and [governed-agent](https://github.com/technobasant/governed-agent) |
-| Identity on the chosen platform, conversation retention | designed, Proposed |
+| Scoping on the platform | measured: the tool's rewrite on 464 recorded queries; Databricks' row filters on its identity, and their limit, in [data-platform-architecture](https://github.com/technobasant/data-platform-architecture) |
+| Conversation retention | designed, Proposed |
 | Injection through text in the data, budgets under load | not tested ([gaps](docs/06-security-and-compliance.md#the-gaps-in-order)) |
 
 The client is fictional and its data synthetic; the hosted models ran on Databricks Free

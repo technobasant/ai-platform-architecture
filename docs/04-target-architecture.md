@@ -29,10 +29,11 @@ flowchart LR
    first is unavailable, and records every call ([0010](../decisions/0010-one-gateway.md)).
 4. The **SQL guard** accepts one read-only `SELECT`, with a row limit and a timeout; anything
    else is refused, not repaired.
-5. The **query tool** runs the query under an identity that can read only the customer's
-   account ([0002](../decisions/0002-isolation-in-the-database.md)). If the model wrote a
-   query for another account, or for every account, the result is still only this
-   customer's rows.
+5. The **query tool** scopes the query to the customer's account before it runs: in the lab
+   by a database role per account ([0002](../decisions/0002-isolation-in-the-database.md)),
+   on the platform by rewriting it onto per-account tables
+   ([0011](../decisions/0011-identity-on-the-platform.md)). If the model wrote a query for
+   another account, or for every account, the result is still only this customer's rows.
 6. The **answer** gives the number or item, the definition it used and the period, and a
    "this is wrong" control that goes to support.
 
@@ -42,17 +43,18 @@ Customers sign in to the product, not to the analytical platform, so the platfor
 user identities do not cover them. The scope has to be applied by something the model cannot
 influence:
 
-| Option | How the scope is applied | Model can affect it | Practical at 12,000 accounts |
-|---|---|---|---|
-| A database identity per account (the lab) | a role per account; row-level security on every table | no | yes in Postgres; a service principal per account on a managed platform is not |
-| One service identity, a policy that reads a per-request value set by the tool | a row filter or row access policy on a session value the tool sets before the query | no, if the session value cannot be changed by the query | yes, where the platform supports it |
-| One service identity, the tool rewrites the query onto per-request views | the tool parses the SQL, rejects any table but its views, and defines the views for the account | no, if parsing is strict | yes, at the cost of a SQL parser in the trust path |
-| The prompt tells the model the account | an instruction | **yes** | measured in the lab: not a control |
+| Option | How the scope is applied | Model can affect it | Practical at 12,000 accounts | Measured |
+|---|---|---|---|---|
+| A database identity per account (the lab) | a role per account; row-level security on every table | no | yes in Postgres; a service principal per account on a managed platform is not | 0 of 120 attacks leaked |
+| One service identity, a policy reading a per-request value set by the tool | a row filter on a session value | no | yes, where the platform supports it | **not possible on Databricks**: a filter function cannot read a session variable |
+| **One service identity, the tool rewrites the query onto per-account tables** | the tool parses the SQL, refuses any table but its three, and prepends per-account versions of them | no | yes | 28 of 28 attack queries scoped exactly as row-level security; 436 of 436 ordinary answers unchanged |
+| The prompt tells the model the account | an instruction | **yes** | yes | 23 of 120 attacks leaked |
 
-The lab measures the first and the last. On the platform, the choice between the second and
-third waits for the platform decision in the data architecture
-([0005 there](https://github.com/technobasant/data-platform-architecture/blob/main/decisions/0005-databricks-or-snowflake.md))
-and is recorded in [0011](../decisions/0011-identity-on-the-platform.md).
+The rewrite is the design on any platform ([0011](../decisions/0011-identity-on-the-platform.md)):
+it was measured on every query the models wrote, and its refusals (a schema-qualified table,
+another table, a redefined name, a file-reading table function, two statements, a write) are
+tested in CI. A platform policy on a per-request value would be preferable where one exists;
+Databricks has none ([measured](https://github.com/technobasant/data-platform-architecture/blob/main/results/poc-databricks.json)).
 
 ## The semantic layer
 

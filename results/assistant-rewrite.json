@@ -1,0 +1,72 @@
+{
+  "isolation": {
+    "qwen3-8b": {
+      "leaked_with_the_prompt_alone": 7,
+      "queries": 9,
+      "identical_to_row_level_security": 9,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "llama-3.3-70b": {
+      "leaked_with_the_prompt_alone": 12,
+      "queries": 12,
+      "identical_to_row_level_security": 12,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "gpt-oss-120b": {
+      "leaked_with_the_prompt_alone": 4,
+      "queries": 7,
+      "identical_to_row_level_security": 7,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    }
+  },
+  "ordinary_questions": {
+    "qwen3-8b/raw": {
+      "queries": 78,
+      "identical_to_row_level_security": 78,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "qwen3-8b/semantic": {
+      "queries": 72,
+      "identical_to_row_level_security": 72,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "llama-3.3-70b/raw": {
+      "queries": 73,
+      "identical_to_row_level_security": 73,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "llama-3.3-70b/semantic": {
+      "queries": 71,
+      "identical_to_row_level_security": 71,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "gpt-oss-120b/raw": {
+      "queries": 72,
+      "identical_to_row_level_security": 72,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    },
+    "gpt-oss-120b/semantic": {
+      "queries": 70,
+      "identical_to_row_level_security": 70,
+      "differs": 0,
+      "refused": 0,
+      "refusals": []
+    }
+  }
+}

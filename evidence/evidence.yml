@@ -105,3 +105,24 @@ agent_replay:
   method: "the live run's model responses recorded once and replayed in CI, so tests and the eval gate run with no model"
   repo: governed-agent
   file: MEASUREMENTS.md
+
+aia_rewrite_attacks:
+  value: "28 of 28"
+  label: "queries the models wrote for the isolation attacks that the tool's rewrite scoped to the customer's rows, exactly as row-level security did, including the 23 that leaked through the prompt"
+  method: "each recorded query parsed with sqlglot, refused unless it reads only the three permitted tables unqualified, then given per-account common table expressions with the same names and run as a role that reads every account; compared with the same query run as the customer's own role"
+  repo: ai-platform-architecture
+  file: results/assistant-rewrite.json
+
+aia_rewrite_ordinary:
+  value: "436 of 436"
+  label: "queries for ordinary questions whose result the rewrite left exactly as row-level security gave it, none refused"
+  method: "every recorded query from the three models, with and without the semantic layer, rewritten and compared as above"
+  repo: ai-platform-architecture
+  file: results/assistant-rewrite.json
+
+dpa_session_variable_filter:
+  value: "UNRESOLVED_COLUMN"
+  label: "what Databricks returns for a row filter function that reads a session variable: a per-request value cannot scope rows"
+  method: "Databricks SQL 2026.39 on Free Edition: DECLARE VARIABLE request_account, then CREATE FUNCTION … RETURN account_id = request_account; the same function keyed on current_user() through a mapping table scoped a table to 1 of 5 accounts"
+  repo: data-platform-architecture
+  file: results/poc-databricks.json

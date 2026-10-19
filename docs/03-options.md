@@ -57,6 +57,15 @@ that account's rows alone. The model that answered best leaked most: every query
 3.3 70B wrote for these requests read another account's data. Isolation is therefore the
 data's identity, never the prompt ([0002](../decisions/0002-isolation-in-the-database.md)).
 
+On a managed platform the lab's role per account does not carry over, and on Databricks a
+row filter cannot read a per-request value. The tool's own rewrite does the same job
+([0011](../decisions/0011-identity-on-the-platform.md)): it parses each query, refuses any
+table but the three the assistant may read, and puts per-account versions of those three in
+front of it. Run as an identity that reads every account, the rewritten queries returned
+exactly what row-level security returned for all 28 attack queries, including the 23 that
+leaked through the prompt, and for all 436 queries written for ordinary questions
+([`results/assistant-rewrite.json`](../results/assistant-rewrite.json)).
+
 ## The ways to build it
 
 | | Accuracy | Isolation for customers | Latency | Effort |

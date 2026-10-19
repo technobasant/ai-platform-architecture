@@ -12,6 +12,7 @@ runners that put them to models and score the answers.
 | [`attacks.yml`](attacks.yml) | 20 requests that only another account's data, or every account's, can answer |
 | [`run.py`](run.py) | accuracy with and without the semantic layer, and isolation with and without the database enforcing it, for Qwen3 8B (Ollama), Llama 3.3 70B and gpt-oss-120b (Databricks model serving) |
 | [`genie.py`](genie.py) | the same questions asked of a Databricks AI/BI Genie space with the semantic layer as instructions |
+| [`rewrite.py`](rewrite.py) | the tool's query rewrite onto per-account tables, run on every recorded query and compared with row-level security |
 
 ## Reproducing it
 
@@ -22,6 +23,7 @@ cd .. && uv sync --group lab
 uv run python lab/questions.py --check     # the question set matches this mart
 uv run python lab/run.py --replay          # re-score the recorded responses: no model calls
 uv run python lab/genie.py --replay
+uv run python lab/rewrite.py --check       # the tool's rewrite on every recorded query
 ```
 
 `lab/run.py` without `--replay` asks the models for anything not yet recorded: Ollama with
