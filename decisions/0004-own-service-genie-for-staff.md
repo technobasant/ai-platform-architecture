@@ -35,9 +35,9 @@ semantic layer, because they are platform users and its row filters apply to the
 ## Consequences
 
 - One more service to build and run, small: a prompt, a guard, a query tool, a gateway.
-- Genie stays useful where its identity model fits; its accuracy with the same definitions
-  was as good as the best model's, which is evidence that the definitions, more than the
-  product, made the difference.
+- Genie stays useful where its identity model fits; with the same definitions it was within
+  one answer of the best models (69 of 70 against 70). It had no run without them, so it
+  does not show that the definitions caused that; the three models' before and after does.
 - Genie's one wrong answer counted every account's Android users because of a missing pair
   of parentheses: in the lab it ran with access to every account. For staff that is a wrong
   number; for a customer it would have been another customer's data.

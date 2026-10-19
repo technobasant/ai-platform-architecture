@@ -29,7 +29,7 @@ and Databricks AI/BI Genie.
 - **A prompt is not isolation.** Told to answer only about the customer's account, the models
   leaked another account's data on **23 of 120** requests; every query Llama 3.3 70B wrote for
   them did. Run as the customer's own database identity, the same queries leaked **0**.
-- **Genie was as accurate, slower, and showed why.** With the same definitions it answered 69
+- **Genie was nearly as accurate, slower, and showed why.** With the same definitions it answered 69
   of 70, at 14.5 s median. Its one miss was a missing pair of parentheses that counted every
   account's Android users: 1,570 people instead of 12.
 - **Cost is not the constraint.** At measured tokens, $0.00028 an answer on gpt-oss-120b: about
