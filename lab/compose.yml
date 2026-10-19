@@ -5,7 +5,8 @@ name: ai-assistant-lab
 
 services:
   mart:
-    image: postgres:17-bookworm
+    # postgres:17-bookworm, PostgreSQL 17.11: the same digest CI pins in .github/workflows/ci.yml
+    image: postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:

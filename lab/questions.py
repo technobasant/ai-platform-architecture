@@ -1,9 +1,10 @@
 """Build the question set: customers' questions about their own usage, with the answer
 each should get, computed by reference SQL on the mart.
 
-24 templates, each asked for three accounts picked with a fixed seed, skipping an account
-where the answer would be zero, missing or tied; and 10 questions the mart cannot answer,
-each asked for two accounts, where the right reply is UNANSWERABLE.
+24 templates, each asked for up to three accounts picked with a fixed seed, skipping an
+account where the answer would be zero, missing or tied (one template, active_jul_not_sep,
+qualifies only one account); and 10 questions the mart cannot answer, each asked for two
+accounts, where the right reply is UNANSWERABLE.
 
     python lab/questions.py            # write lab/questions.json (the mart must be running)
     python lab/questions.py --check    # fail if lab/questions.json differs

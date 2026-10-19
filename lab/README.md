@@ -20,11 +20,17 @@ runners that put them to models and score the answers.
 cd lab && docker compose up -d mart
 docker compose exec -T mart psql -U postgres -q -f /lab/data.sql
 cd .. && uv sync --group lab
-uv run python lab/questions.py --check     # the question set matches this mart
-uv run python lab/run.py --replay          # re-score the recorded responses: no model calls
-uv run python lab/genie.py --replay
-uv run python lab/rewrite.py --check       # the tool's rewrite on every recorded query
+uv run python lab/questions.py --check            # the question set matches this mart
+uv run python lab/run.py --replay --check         # re-score the recordings: no model calls
+uv run python lab/genie.py --replay --check
+uv run python lab/rewrite.py --check              # the tool's rewrite and lab/escapes.yml,
+                                                   # on every recorded query
 ```
+
+`--replay` alone re-scores the recordings and overwrites the published `results/*.json`;
+always add `--check` to verify instead, which fails if anything would change rather than
+rewriting it. `rewrite.py` only ever scores from recordings, so it has `--check` and no
+separate `--replay` flag.
 
 `lab/run.py` without `--replay` asks the models for anything not yet recorded: Ollama with
 `qwen3:8b` on localhost, and `DATABRICKS_HOST` and `DATABRICKS_TOKEN` for the hosted models.
@@ -55,5 +61,7 @@ result of the query it ran.
 - Genie's space ran as the workspace's one user, with access to every account; the
   customer-identity question is in [0011](../decisions/0011-identity-on-the-platform.md).
 - Latency on Free Edition's shared serving and on a laptop is indicative only.
+- `genie.py` polls every 3 s for a result, so each Genie timing includes up to 3 s of
+  polling; it is still slower than the 10 s target.
 - One of the semantic layer's examples teaches a metric the questions ask about for another
   month.
