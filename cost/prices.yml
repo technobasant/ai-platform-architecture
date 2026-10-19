@@ -2,7 +2,7 @@
 # and AWS on-demand GPU instances in us-east-1. Each was read on the vendor's own page on
 # the date below; `quote` is what the page said. Prices change, and two of these are
 # already scheduled to: see the notes.
-retrieved: "2026-10-18 (Databricks: 2026-10-19)"
+retrieved: "2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the client's region)"
 
 models:
   claude-opus-5-5:
@@ -64,18 +64,18 @@ models:
     quote: "$0.30 (text / image / video / audio) … $2.50"
   databricks-llama-3-3-70b:
     provider: Databricks (pay-per-token model serving)
-    input: 0.50
-    output: 1.50
+    input: 0.557154
+    output: 1.671462
     source: https://www.databricks.com/product/pricing/foundation-model-serving
     quote: "Llama 3.3 70B Instruct … 7.143 DBU per 1M input tokens … 21.429 DBU per 1M output tokens"
-    note: "at $0.07 per DBU, the page's example rate for AWS US East (N. Virginia); measured in the usage-assistant lab"
+    note: "at $0.078 per DBU, AWS EU (Ireland), the client's region: PREMIUM_SERVERLESS_REAL_TIME_INFERENCE_EUROPE_IRELAND in the platform's system.billing.list_prices ($0.07 in US East); measured in the usage-assistant lab"
   databricks-gpt-oss-120b:
     provider: Databricks (pay-per-token model serving)
-    input: 0.15
-    output: 0.60
+    input: 0.167154
+    output: 0.668538
     source: https://www.databricks.com/product/pricing/foundation-model-serving
     quote: "GPT-OSS-120B … 2.143 DBU per 1M input tokens … 8.571 DBU per 1M output tokens"
-    note: "at $0.07 per DBU, as above; a reasoning model, so its output includes reasoning tokens"
+    note: "at $0.078 per DBU in AWS EU (Ireland), as above; a reasoning model, so its output includes reasoning tokens"
 
 gpus:
   g6-xlarge:
@@ -93,3 +93,17 @@ gpus:
     usd_per_hour: 55.04
     source: https://aws.amazon.com/ec2/pricing/on-demand/
     quote: "\"price\": \"55.0400000000\", … \"Instance Type\": \"p5.48xlarge\""
+
+# The SQL warehouse the assistant's queries would run on, if they ran on the analytical
+# platform: billed for every minute it is awake, busy or not.
+query_engine:
+  serverless_sql_per_dbu:
+    value: 0.91
+    unit: USD per DBU
+    source: "Databricks system.billing.list_prices, read in data-platform-architecture's proof-of-concept workspace"
+    quote: "PREMIUM_SERVERLESS_SQL_COMPUTE_EUROPE_IRELAND 0.91 (US East 0.70)"
+  smallest_warehouse_dbu_per_hour:
+    value: 4
+    unit: DBU per hour, 2X-Small serverless SQL warehouse
+    source: https://github.com/technobasant/data-platform-architecture/blob/main/results/poc-databricks-workload.json
+    quote: "measured: the DBUs the billing table charged for a 2X-Small's uptime, in the proof of concept"

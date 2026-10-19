@@ -60,7 +60,7 @@ result of the query it ran.
   that both answered 70.
 - Genie's space ran as the workspace's one user, with access to every account; the
   customer-identity question is in [0011](../decisions/0011-identity-on-the-platform.md).
-- Latency on Free Edition's shared serving and on a laptop is indicative only.
+- Latency on Free Edition's shared serving and on one host (Apple M5, 24 GB) is indicative only.
 - `genie.py` polls every 3 s for a result, so each Genie timing includes up to 3 s of
   polling; it is still slower than the 10 s target.
 - One of the semantic layer's examples teaches a metric the questions ask about for another

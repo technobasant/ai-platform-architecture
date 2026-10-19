@@ -1,5 +1,5 @@
 {
-  "prices_retrieved": "2026-10-18 (Databricks: 2026-10-19)",
+  "prices_retrieved": "2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the client's region)",
   "per_answer": {
     "usage_assistant": {
       "claude-opus-5-5": 0.008336,
@@ -11,8 +11,8 @@
       "gemini-3-1-pro-preview": 0.004564,
       "gemini-3-8-flash": 0.001563,
       "gemini-3-5-flash-lite": 0.000823,
-      "databricks-llama-3-3-70b": 0.000844,
-      "databricks-gpt-oss-120b": 0.000283
+      "databricks-llama-3-3-70b": 0.00094,
+      "databricks-gpt-oss-120b": 0.000315
     }
   },
   "monthly": {
@@ -63,16 +63,24 @@
         "month_36": 493.92
       },
       "databricks-llama-3-3-70b": {
-        "launch": 50.64,
-        "month_12": 126.6,
-        "month_36": 506.4
+        "launch": 56.43,
+        "month_12": 141.07,
+        "month_36": 564.29
       },
       "databricks-gpt-oss-120b": {
-        "launch": 16.97,
-        "month_12": 42.44,
-        "month_36": 169.74
+        "launch": 18.91,
+        "month_12": 47.29,
+        "month_36": 189.14
       }
     }
+  },
+  "query_engine": {
+    "usd_per_hour": 3.64,
+    "monthly_usd": {
+      "eu_working_hours": 961,
+      "always": 2657
+    },
+    "ceiling_usd_per_month": 1500
   },
   "break_even_feature": "usage_assistant",
   "break_even": {
@@ -88,8 +96,8 @@
         "gemini-3-1-pro-preview": 176,
         "gemini-3-8-flash": 515,
         "gemini-3-5-flash-lite": 978,
-        "databricks-llama-3-3-70b": 954,
-        "databricks-gpt-oss-120b": 2845
+        "databricks-llama-3-3-70b": 856,
+        "databricks-gpt-oss-120b": 2553
       }
     },
     "g6e-xlarge": {
@@ -104,8 +112,8 @@
         "gemini-3-1-pro-preview": 408,
         "gemini-3-8-flash": 1191,
         "gemini-3-5-flash-lite": 2261,
-        "databricks-llama-3-3-70b": 2205,
-        "databricks-gpt-oss-120b": 6578
+        "databricks-llama-3-3-70b": 1979,
+        "databricks-gpt-oss-120b": 5903
       }
     },
     "p5-48xlarge": {
@@ -120,8 +128,8 @@
         "gemini-3-1-pro-preview": 12060,
         "gemini-3-8-flash": 35214,
         "gemini-3-5-flash-lite": 66861,
-        "databricks-llama-3-3-70b": 65213,
-        "databricks-gpt-oss-120b": 194556
+        "databricks-llama-3-3-70b": 58524,
+        "databricks-gpt-oss-120b": 174599
       }
     }
   }

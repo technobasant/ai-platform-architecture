@@ -11,3 +11,11 @@ features:
 
 # The feature whose per-answer price sets the self-hosting break-even.
 break_even_feature: usage_assistant
+
+# Where the assistant's SQL runs, if on the analytical platform: a warehouse has to be awake
+# whenever a customer may ask. Its size and rate are measured (the smallest one ran the
+# usage queries in seconds); how many hours it is awake is the assumption. The ceiling is
+# the brief's (A6).
+query_engine:
+  hours_awake_per_month: {eu_working_hours: 264, always: 730}   # 12 h × 22 days; 24 × 30.4
+  ceiling_usd_per_month: 1500

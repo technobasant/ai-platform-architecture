@@ -1666,7 +1666,7 @@
       "tokens_out_mean": 55,
       "seconds_median": 2.27,
       "seconds_p95": 3.17,
-      "usd_per_answer": 0.000252,
+      "usd_per_answer": 0.000281,
       "summary": "55/70 correct, 17/20 unanswerable declined",
       "log": [
         {
@@ -2493,7 +2493,7 @@
       "tokens_out_mean": 52,
       "seconds_median": 2.11,
       "seconds_p95": 2.89,
-      "usd_per_answer": 0.0006,
+      "usd_per_answer": 0.000669,
       "summary": "70/70 correct, 19/20 unanswerable declined",
       "log": [
         {
@@ -3320,7 +3320,7 @@
       "tokens_out_mean": 221,
       "seconds_median": 3.95,
       "seconds_p95": 8.56,
-      "usd_per_answer": 0.000191,
+      "usd_per_answer": 0.000213,
       "summary": "65/70 correct, 18/20 unanswerable declined",
       "log": [
         {
@@ -4147,7 +4147,7 @@
       "tokens_out_mean": 198,
       "seconds_median": 2.91,
       "seconds_p95": 5.52,
-      "usd_per_answer": 0.000283,
+      "usd_per_answer": 0.000315,
       "summary": "70/70 correct, 20/20 unanswerable declined",
       "log": [
         {

@@ -32,11 +32,14 @@ and Databricks AI/BI Genie.
 - **Genie was nearly as accurate, slower, and showed why.** With the same definitions it answered 69
   of 70, at 14.5 s median. Its one miss was a missing pair of parentheses that counted every
   account's Android users: 1,570 people instead of 12.
-- **Cost is not the constraint.** At measured tokens, $0.00028 an answer on gpt-oss-120b: about
-  $17 a month at launch volume. Self-hosting is price arithmetic only: an L4 or L40S GPU is
-  far too small to hold a 120-billion-parameter model at all; on hardware that actually could
-  (p5-48xlarge, 8×H100), break-even is about 194,600 answers an hour, against about 80 at
-  launch.
+- **The model is cheap; keeping a warehouse awake for it is not.** At measured tokens,
+  $0.00032 an answer on gpt-oss-120b in the client's EU region: about $19 a month at launch
+  volume. The smallest SQL warehouse, awake whenever a customer may ask, would cost $2,657 a
+  month, more than the whole $1,500 ceiling, so the assistant queries the stage-2 usage store
+  that is awake anyway ([0014](decisions/0014-cost-per-answer.md)). Self-hosting the model is
+  price arithmetic only: an L4 or L40S GPU is far too small to hold a 120-billion-parameter
+  model at all; on hardware that actually could (p5-48xlarge, 8×H100), break-even is about
+  174,600 answers an hour, against about 80 at launch.
 
 **The recommendation.** The client's own small service on the platform's model serving:
 gpt-oss-120b with Llama 3.3 70B as the fallback, the semantic layer in every prompt, one
@@ -72,7 +75,7 @@ per-account tables: on every recorded query it returned exactly what row-level s
 | 0002 | [Each query is scoped to the customer's account by a mechanism the model cannot influence; the prompt is not a control](decisions/0002-isolation-in-the-database.md) | Accepted | 23 of 120 requests for another account's data that leaked when isolation was left to the prompt; 0 of 28 queries that reached the database (of the 120 requests; the rest were declined) and returned another account's data, run as the customer's own database role |
 | 0003 | [A semantic layer of the business's definitions goes into every prompt](decisions/0003-semantic-layer.md) | Accepted | 55 → 70 of 70 customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer; 46 → 64 of 70 the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer |
 | 0004 | [Customers get the client's own assistant service; staff can use the platform's assistant](decisions/0004-own-service-genie-for-staff.md) | Accepted | 69 of 70 questions Databricks AI/BI Genie answered correctly with the same definitions as instructions; median 14.5 s; 1,570 vs 12 people Genie counted for one customer's mobile users, against the right answer: a missing pair of parentheses counted every account's Android users |
-| 0005 | [gpt-oss-120b on the platform's model serving, with Llama 3.3 70B as the fallback](decisions/0005-model-choice.md) | Accepted | 20 of 20 questions the data cannot answer that gpt-oss-120b declined, with the semantic layer; $0.00028 per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s |
+| 0005 | [gpt-oss-120b on the platform's model serving, with Llama 3.3 70B as the fallback](decisions/0005-model-choice.md) | Accepted | 20 of 20 questions the data cannot answer that gpt-oss-120b declined, with the semantic layer; $0.00032 per answer on gpt-oss-120b at Databricks' pay-per-token list price in the client's EU region, from measured tokens; p95 5.5 s |
 | 0006 | [Every model response is recorded with its prompt's hash, and can be re-scored without the model](decisions/0006-record-every-response.md) | Accepted | 660 recorded model responses re-scored in CI against a fresh mart, with no model called; 54 of 54 cases where replaying the recorded model reproduced the live run's output |
 | 0007 | [A model that judges answers is an instrument: calibrated against labels before its scores count](decisions/0007-judges-are-instruments.md) | Accepted | 7 vs 4 judge–key disagreements where the key, not the judge, was wrong; 5.9% → 0.0% false-positive rate of the judge on the baseline run, thinking off against thinking on |
 | 0008 | [Prompt, model and definition changes ship through a paired evaluation gate](decisions/0008-release-gate.md) | Accepted | p = 0.39 for a 4.8-point judge drop the gate declined to fail; 1,469 → 4,422 ms p95 latency, the regression that was real |
@@ -81,7 +84,7 @@ per-account tables: on every recorded query it returned exactly what row-level s
 | 0011 | [On the platform, the assistant's tool scopes each query by rewriting it onto per-account tables](decisions/0011-identity-on-the-platform.md) | Accepted | 28 of 28 queries the models wrote for the isolation attacks that the tool's rewrite scoped to the customer's rows, exactly as row-level security did, including the 23 that leaked through the prompt; 436 of 436 queries for ordinary questions whose result the rewrite left exactly as row-level security gave it, none refused |
 | 0012 | [One read-only statement, with a row limit and a timeout, or nothing](decisions/0012-sql-guard.md) | Accepted | 0 of 28 queries that reached the database (of the 120 requests; the rest were declined) and returned another account's data, run as the customer's own database role |
 | 0013 | [Questions and answers are kept 30 days, never used for training, and erased on request](decisions/0013-conversation-retention.md) | Proposed | modelled, not yet measured |
-| 0014 | [The assistant has a cost per answer, from measured tokens, and a monthly ceiling](decisions/0014-cost-per-answer.md) | Accepted | $0.00028 per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s |
+| 0014 | [The assistant has a cost per answer, from measured tokens, and a monthly ceiling](decisions/0014-cost-per-answer.md) | Accepted | $0.00032 per answer on gpt-oss-120b at Databricks' pay-per-token list price in the client's EU region, from measured tokens; p95 5.5 s |
 <!-- decisions:end -->
 
 Every figure, with its method and source file, is in [EVIDENCE.md](EVIDENCE.md).
@@ -98,8 +101,9 @@ Every figure, with its method and source file, is in [EVIDENCE.md](EVIDENCE.md).
 | Injection through text in the data, budgets under load | not tested ([gaps](docs/06-security-and-compliance.md#the-gaps-in-order)) |
 
 The client is fictional and its data synthetic; the hosted models ran on Databricks Free
-Edition's model serving, and the local model on a laptop. The first version of this
-repository, a reference architecture for several AI features without a client, is in the
+Edition's model serving, and the local model with Ollama on one host, an Apple M5 with
+24 GB. The first version of this repository, a reference architecture for several AI
+features without a client, is in the
 [v0.1.0 tag](https://github.com/technobasant/ai-platform-architecture/tree/v0.1.0).
 
 ## Licence

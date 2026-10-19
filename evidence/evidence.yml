@@ -11,7 +11,7 @@ aia_semantic_llama:
 aia_semantic_qwen:
   value: "46 → 64 of 70"
   label: "the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer"
-  method: "as above; Ollama on a laptop, temperature 0, thinking off"
+  method: "as above; Ollama on one host (Apple M5, 24 GB), temperature 0, thinking off"
   repo: ai-platform-architecture
   file: results/assistant.json
 
@@ -51,9 +51,9 @@ aia_genie_precedence:
   file: results/assistant-genie-responses.jsonl
 
 aia_cost_per_answer:
-  value: "$0.00028"
-  label: "per answer on gpt-oss-120b at Databricks' pay-per-token list price, from measured tokens; p95 5.5 s"
-  method: "mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; $0.15 and $0.60 per million tokens (2.143 and 8.571 DBU at $0.07)"
+  value: "$0.00032"
+  label: "per answer on gpt-oss-120b at Databricks' pay-per-token list price in the client's EU region, from measured tokens; p95 5.5 s"
+  method: "mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; 2.143 and 8.571 DBU per million tokens at $0.078 a DBU, AWS EU (Ireland), from the platform's system.billing.list_prices ($0.07 in US East)"
   repo: ai-platform-architecture
   file: results/assistant.json
 

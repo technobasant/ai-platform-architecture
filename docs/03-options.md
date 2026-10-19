@@ -27,8 +27,8 @@ role; the reference answer must appear in the first row.
 The semantic layer ([0003](../decisions/0003-semantic-layer.md)) is worth more than the
 choice of model: it moved Llama 3.3 70B from 55 to 70 (+15), Qwen3 8B from 46 to 64 (+18) and
 gpt-oss-120b from 65 to 70 (+5). No model wrongly declined an answerable question. The hosted
-models ran on Databricks Free Edition's model serving; the local model on a laptop, so its
-times are the laptop's. "Today" is pinned to 2026-10-01 for any query that asks the clock
+models ran on Databricks Free Edition's model serving; the local model with Ollama on one host, an Apple M5
+with 24 GB, so its times are that machine's. "Today" is pinned to 2026-10-01 for any query that asks the clock
 (`CURRENT_DATE`, `now()`), so these scores do not depend on when the lab is replayed.
 
 The 70 answerable questions are 24 templates, not 70 independent trials: an error in one
@@ -104,12 +104,12 @@ measured, its answers cost $0.00060, not the $0.00084 the table gives it at gpt-
 token counts.
 
 <!-- cost:start -->
-List prices retrieved 2026-10-18 (Databricks: 2026-10-19) ([`cost/prices.yml`](../cost/prices.yml)); tokens per answer measured in the lab, question volumes from the brief ([`cost/workloads.yml`](../cost/workloads.yml)).
+List prices retrieved 2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the client's region) ([`cost/prices.yml`](../cost/prices.yml)); tokens per answer measured in the lab, question volumes from the brief ([`cost/workloads.yml`](../cost/workloads.yml)).
 
 | Model | Per answer | launch: 60,000/month | month 12: 150,000/month | month 36: 600,000/month |
 |---|---:|---:|---:|---:|
-| databricks-gpt-oss-120b | $0.00028 | $17 | $42 | $170 |
-| databricks-llama-3-3-70b | $0.00084 | $51 | $127 | $506 |
+| databricks-gpt-oss-120b | $0.00032 | $19 | $47 | $189 |
+| databricks-llama-3-3-70b | $0.00094 | $56 | $141 | $564 |
 | claude-opus-5-5 | $0.00834 | $500 | $1,250 | $5,002 |
 | claude-sonnet-5 | $0.00417 | $250 | $625 | $2,501 |
 | claude-haiku-4-5 | $0.00208 | $125 | $313 | $1,250 |
@@ -124,8 +124,8 @@ List prices retrieved 2026-10-18 (Databricks: 2026-10-19) ([`cost/prices.yml`](.
 
 | Model replaced | g6-xlarge ($0.8048/h) | g6e-xlarge ($1.861/h) | p5-48xlarge ($55.04/h) |
 |---|---:|---:|---:|
-| databricks-gpt-oss-120b | 2,845 | 6,578 | 194,556 |
-| databricks-llama-3-3-70b | 954 | 2,205 | 65,213 |
+| databricks-gpt-oss-120b | 2,553 | 5,903 | 174,599 |
+| databricks-llama-3-3-70b | 856 | 1,979 | 58,524 |
 | claude-opus-5-5 | 97 | 223 | 6,603 |
 | claude-sonnet-5 | 193 | 446 | 13,205 |
 | claude-haiku-4-5 | 386 | 893 | 26,411 |
@@ -137,10 +137,12 @@ List prices retrieved 2026-10-18 (Databricks: 2026-10-19) ([`cost/prices.yml`](.
 | gemini-3-5-flash-lite | 978 | 2,261 | 66,861 |
 <!-- cost:end -->
 
-At the client's volume the model bill is a rounding error against the $1,500 ceiling, and the
+At the client's volume the model bill is a rounding error against the $1,500 ceiling; the
+engine that runs the queries is not, if it is a warehouse kept awake for them
+([0014](../decisions/0014-cost-per-answer.md)). The
 break-even table above is price arithmetic only, not a hosting plan: L4 (24 GB) and L40S
 (48 GB) are far too small to hold gpt-oss-120b (120 billion parameters) at any precision
 worth serving; of the three GPU rows, only something like p5-48xlarge (8×H100, far more
-memory) could actually host it, and there self-hosting is cheaper only above about 194,600
+memory) could actually host it, and there self-hosting is cheaper only above about 174,600
 answers an hour, against about 80 an hour at launch. Llama 3.3 70B is a closer fit for a
 single L40S, but at this volume self-hosting still costs more than it saves.
