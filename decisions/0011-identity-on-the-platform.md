@@ -56,9 +56,12 @@ marts and nothing else.
   counted 14 users but could read 1,935 — every account's — from `pg_class.reltuples`; the
   rewrite refuses any query that reads `pg_class` or another catalog table outright, whether
   or not the platform's own identity has that problem.
-- Before launch on a chosen platform, the escape corpus and the isolation suite run again in
-  that platform's SQL dialect: the function list and the parser differ on Databricks SQL or
-  Snowflake, so a refusal proven on Postgres is not assumed to carry over untested.
+- Before launch, the escape corpus and the isolation suite run again in the SQL dialect of
+  the engine the queries actually run on: the stage-2 usage store, since a warehouse kept
+  awake for the assistant would cost more than its whole budget
+  ([0014](0014-cost-per-answer.md)), or the platform's SQL if that changes. The function
+  list and the parser differ between engines, so a refusal proven on Postgres is not assumed
+  to carry over untested.
 - If the chosen platform gains a per-request value a filter can read, the platform policy
   replaces the rewrite, or sits under it.
 

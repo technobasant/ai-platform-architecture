@@ -43,7 +43,7 @@ it, and what has been tested. "Not tested" means designed and not yet exercised.
 
 1. Injection through data: an account name, a report title or any text column carrying
    instructions, in the isolation suite.
-2. The rewrite on the platform itself: measured on Postgres with the lab's recordings
-   ([0011](../decisions/0011-identity-on-the-platform.md)); to be re-run on the chosen
-   platform's SQL dialect before launch.
+2. The rewrite on the engine the queries will run on: measured on Postgres with the lab's
+   recordings ([0011](../decisions/0011-identity-on-the-platform.md)); to be re-run in the
+   stage-2 usage store's SQL dialect before launch ([0014](../decisions/0014-cost-per-answer.md)).
 3. Budgets under load: a burst of questions and a looping client against the gateway.
