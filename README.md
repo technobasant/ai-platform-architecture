@@ -104,7 +104,7 @@ Every figure, with its method and source file, is in [EVIDENCE.md](EVIDENCE.md).
 Data: generated to the scenario's shape and rebuilt identically in CI, so every figure can be
 re-run. The hosted models ran on Databricks Free Edition's model serving, and the local model
 with Ollama on one host, an Apple M5 with 24 GB. The first version of this repository, a
-reference architecture for several AI features without a client, is in the
+general reference architecture for several AI features before it took on this scenario, is in the
 [v0.1.0 tag](https://github.com/technobasant/ai-platform-architecture/tree/v0.1.0).
 
 ## Licence

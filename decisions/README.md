@@ -28,5 +28,5 @@ a record lacks a section, cites an unknown figure, or is Accepted without eviden
 <!-- decisions:end -->
 
 The records of this repository's first version, a reference architecture for several AI
-features without a client, are in the
+features before it took on this scenario, are in the
 [v0.1.0 tag](https://github.com/technobasant/ai-platform-architecture/tree/v0.1.0/decisions).
