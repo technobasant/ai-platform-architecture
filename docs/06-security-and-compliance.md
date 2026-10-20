@@ -22,7 +22,7 @@ it, and what has been tested. "Not tested" means designed and not yet exercised.
 
 - **What the model sees:** the question, the schema and the definitions. Query results are
   not sent back to the model in this design; the service composes the answer from the rows.
-- **Where it runs:** on the platform's model serving in the client's EU region, so prompts
+- **Where it runs:** on the platform's model serving in the company's EU region, so prompts
   do not leave the region or the platform's data processing agreement.
 - **What is kept:** question, SQL, result summary, model and prompt version, 30 days, then
   deleted; deleted earlier for an erasure request
@@ -35,9 +35,9 @@ it, and what has been tested. "Not tested" means designed and not yet exercised.
 |---|---|---|
 | EU AI Act | a general-purpose model used in a system that interacts with people: not a high-risk use; transparency (Article 50: people are told they are interacting with an AI system) and AI literacy (Article 4) for the staff who run it | the interface says it is an AI assistant and shows the definition used; the runbooks and the evaluation are the team's training material |
 | GDPR | questions may contain personal data; erasure and retention | 30-day retention; erasure by user; processing in the EU region |
-| SOC 2 (the client's audit) | access, change management, monitoring | the assistant's identities in Terraform; prompt, model and definition changes through the gate; traces and audit |
+| SOC 2 (the company's audit) | access, change management, monitoring | the assistant's identities in Terraform; prompt, model and definition changes through the gate; traces and audit |
 | NIST AI RMF | Govern, Map, Measure, Manage | ownership and the decision records; the brief and threats above; the evaluation set and isolation suite; the gate, monitoring and runbooks |
-| ISO/IEC 42001 | an AI management system, if the client certifies | the same artefacts are its evidence: policy (principles), risk register, evaluation records, change control |
+| ISO/IEC 42001 | an AI management system, if the company certifies | the same artefacts are its evidence: policy (principles), risk register, evaluation records, change control |
 
 ## The gaps, in order
 

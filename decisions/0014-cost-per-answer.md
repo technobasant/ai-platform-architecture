@@ -31,12 +31,12 @@ gateway as a monthly ceiling with per-account rate limits ([0010](0010-one-gatew
 ## Consequences
 
 - At the measured 1,094 input and 198 output tokens, gpt-oss-120b costs $0.00032 an answer at
-  list price in the client's EU region: about $19 a month at launch volume and $189 at 36
+  list price in the company's EU region: about $19 a month at launch volume and $189 at 36
   months, far inside the budget.
 - The model is not the large cost; the engine that runs its queries is. A SQL warehouse is
   billed for every minute it is awake, and customers ask at any hour. The smallest serverless
   warehouse, measured in the data architecture's proof of concept at 4 DBU an hour, costs
-  $3.64 an hour in the client's region: $961 a month awake for EU working hours alone, and
+  $3.64 an hour in the company's region: $961 a month awake for EU working hours alone, and
   $2,657 awake all month, against the $1,500 ceiling, before a single token. So the
   assistant's queries do not get a warehouse of their own: they go where something is awake
   anyway, the stage-2 usage store
@@ -52,5 +52,5 @@ stage 2 is not built, and the assistant needs a query engine of its own.
 ## Evidence
 
 <!-- evidence:start -->
-- **$0.00032** per answer on gpt-oss-120b at Databricks' pay-per-token list price in the client's EU region, from measured tokens; p95 5.5 s. Mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; 2.143 and 8.571 DBU per million tokens at $0.078 a DBU, AWS EU (Ireland), from the platform's system.billing.list_prices ($0.07 in US East). Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
+- **$0.00032** per answer on gpt-oss-120b at Databricks' pay-per-token list price in the company's EU region, from measured tokens; p95 5.5 s. Mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; 2.143 and 8.571 DBU per million tokens at $0.078 a DBU, AWS EU (Ireland), from the platform's system.billing.list_prices ($0.07 in US East). Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 <!-- evidence:end -->

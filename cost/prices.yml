@@ -2,7 +2,7 @@
 # and AWS on-demand GPU instances in us-east-1. Each was read on the vendor's own page on
 # the date below; `quote` is what the page said. Prices change, and two of these are
 # already scheduled to: see the notes.
-retrieved: "2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the client's region)"
+retrieved: "2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the company's region)"
 
 models:
   claude-opus-5-5:
@@ -68,7 +68,7 @@ models:
     output: 1.671462
     source: https://www.databricks.com/product/pricing/foundation-model-serving
     quote: "Llama 3.3 70B Instruct … 7.143 DBU per 1M input tokens … 21.429 DBU per 1M output tokens"
-    note: "at $0.078 per DBU, AWS EU (Ireland), the client's region: PREMIUM_SERVERLESS_REAL_TIME_INFERENCE_EUROPE_IRELAND in the platform's system.billing.list_prices ($0.07 in US East); measured in the usage-assistant lab"
+    note: "at $0.078 per DBU, AWS EU (Ireland), the company's region: PREMIUM_SERVERLESS_REAL_TIME_INFERENCE_EUROPE_IRELAND in the platform's system.billing.list_prices ($0.07 in US East); measured in the usage-assistant lab"
   databricks-gpt-oss-120b:
     provider: Databricks (pay-per-token model serving)
     input: 0.167154

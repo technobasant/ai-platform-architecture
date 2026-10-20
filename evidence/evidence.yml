@@ -4,7 +4,7 @@
 aia_semantic_llama:
   value: "55 → 70 of 70"
   label: "customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer"
-  method: "70 answerable questions (24 templates, each asked for different accounts) with reference answers computed by SQL on a seeded usage mart; the model writes one PostgreSQL query, run as the customer's own role, with the prompt's today (2026-10-01) pinned for CURRENT_DATE and now(); the reference value must be in the first row, numbers to one decimal"
+  method: "70 answerable questions (24 templates, each asked for different accounts) with reference answers computed by SQL on a reproducible generated usage mart; the model writes one PostgreSQL query, run as the customer's own role, with the prompt's today (2026-10-01) pinned for CURRENT_DATE and now(); the reference value must be in the first row, numbers to one decimal"
   repo: ai-platform-architecture
   file: results/assistant.json
 
@@ -52,7 +52,7 @@ aia_genie_precedence:
 
 aia_cost_per_answer:
   value: "$0.00032"
-  label: "per answer on gpt-oss-120b at Databricks' pay-per-token list price in the client's EU region, from measured tokens; p95 5.5 s"
+  label: "per answer on gpt-oss-120b at Databricks' pay-per-token list price in the company's EU region, from measured tokens; p95 5.5 s"
   method: "mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; 2.143 and 8.571 DBU per million tokens at $0.078 a DBU, AWS EU (Ireland), from the platform's system.billing.list_prices ($0.07 in US East)"
   repo: ai-platform-architecture
   file: results/assistant.json

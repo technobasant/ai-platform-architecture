@@ -1,6 +1,6 @@
 # The usage assistant lab
 
-Everything behind [3. Options, measured](../docs/03-options.md): a seeded copy of the usage mart,
+Everything behind [3. Options, measured](../docs/03-options.md): a reproducible generated copy of the usage mart,
 customer questions with answers computed by SQL, requests for other accounts' data, and the
 runners that put them to models and score the answers.
 

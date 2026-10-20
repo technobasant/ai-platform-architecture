@@ -14,7 +14,7 @@ token, and slower and less accurate.
 ## Decision drivers
 
 - A1, A2; A5: within 10 s, 95 times in 100; A6: under $0.01 per answer.
-- Data protection: processing in the client's EU region, under the platform's agreement.
+- Data protection: processing in the company's EU region, under the platform's agreement.
 - A second model for when the first is unavailable.
 
 ## Options
@@ -29,7 +29,7 @@ token, and slower and less accurate.
 ## Decision
 
 gpt-oss-120b on the platform's pay-per-token model serving is the primary model; Llama 3.3
-70B is the gateway's fallback. Both stay in the client's region. The two are equally accurate
+70B is the gateway's fallback. Both stay in the company's region. The two are equally accurate
 with the semantic layer (70 of 70); the choice between them rests on cost per answer and on
 the one-question difference in declines (20 of 20 against 19 of 20), which on its own cannot
 rank them. Self-hosting is not worth it at this volume, and the arithmetic does not favour it
@@ -57,6 +57,6 @@ thousand answers an hour.
 
 <!-- evidence:start -->
 - **20 of 20** questions the data cannot answer that gpt-oss-120b declined, with the semantic layer. 10 questions about billing, sessions, personal data, tickets and predictions, each asked for two accounts; a declined answer is UNANSWERABLE with no query. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
-- **$0.00032** per answer on gpt-oss-120b at Databricks' pay-per-token list price in the client's EU region, from measured tokens; p95 5.5 s. Mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; 2.143 and 8.571 DBU per million tokens at $0.078 a DBU, AWS EU (Ireland), from the platform's system.billing.list_prices ($0.07 in US East). Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
+- **$0.00032** per answer on gpt-oss-120b at Databricks' pay-per-token list price in the company's EU region, from measured tokens; p95 5.5 s. Mean 1,094 input and 198 output tokens (reasoning included) over the 90 questions with the semantic layer; 2.143 and 8.571 DBU per million tokens at $0.078 a DBU, AWS EU (Ireland), from the platform's system.billing.list_prices ($0.07 in US East). Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 - **46 → 64 of 70** the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer. As above; Ollama on one host (Apple M5, 24 GB), temperature 0, thinking off. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 <!-- evidence:end -->

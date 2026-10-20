@@ -1,10 +1,10 @@
 # 1. The brief
 
-Stage 3 of the engagement in
-[data-platform-architecture](https://github.com/technobasant/data-platform-architecture):
-the same fictional client, a B2B SaaS company with 6,000 customer accounts, now with an
-analytical platform that holds its history in governed tables. The client and its data are
-fictional; the assistant's behaviour is measured on a lab copy of the usage mart
+Stage 3 of the reference architecture in
+[data-platform-architecture](https://github.com/technobasant/data-platform-architecture): the
+same company — a B2B SaaS company with 6,000 customer accounts — now with an analytical
+platform that holds its history in governed tables. The company's data is generated; the
+assistant's behaviour is measured on a lab copy of the usage mart
 ([lab/](../lab)).
 
 ## What the product wants
@@ -61,4 +61,4 @@ today, and support answers them by hand from the BI tool.
 
 Actions on the customer's behalf (changing seats, exporting data): the assistant answers,
 it does not act. Answers from documentation (a help-centre assistant) and models that score
-customers (churn, fraud), which the client may add later on the same foundations.
+customers (churn, fraud), which the company may add later on the same foundations.

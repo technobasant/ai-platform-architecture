@@ -1,5 +1,5 @@
 {
-  "prices_retrieved": "2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the client's region)",
+  "prices_retrieved": "2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the company's region)",
   "per_answer": {
     "usage_assistant": {
       "claude-opus-5-5": 0.008336,

@@ -24,7 +24,7 @@ guesses, and some guesses are plausible and wrong.
 |---|---:|---:|---:|---|
 | Table definitions only | 55 of 70 | 46 of 70 | 65 of 70 | about 340 tokens |
 | **Table definitions and the semantic layer** (periods, vocabulary, metric SQL, rules, three examples) | **70 of 70** | **64 of 70** | **70 of 70** | about 1,100 tokens |
-| Fine-tuning a model on the client's questions | not measured | | | the smallest prompt, a model to maintain |
+| Fine-tuning a model on the company's questions | not measured | | | the smallest prompt, a model to maintain |
 
 ## Decision
 
@@ -55,6 +55,6 @@ definitions are retrieved per question rather than sent whole.
 ## Evidence
 
 <!-- evidence:start -->
-- **55 → 70 of 70** customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer. 70 answerable questions (24 templates, each asked for different accounts) with reference answers computed by SQL on a seeded usage mart; the model writes one PostgreSQL query, run as the customer's own role, with the prompt's today (2026-10-01) pinned for CURRENT_DATE and now(); the reference value must be in the first row, numbers to one decimal. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
+- **55 → 70 of 70** customers' questions answered correctly by Llama 3.3 70B, from the table definitions alone and with the semantic layer. 70 answerable questions (24 templates, each asked for different accounts) with reference answers computed by SQL on a reproducible generated usage mart; the model writes one PostgreSQL query, run as the customer's own role, with the prompt's today (2026-10-01) pinned for CURRENT_DATE and now(); the reference value must be in the first row, numbers to one decimal. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 - **46 → 64 of 70** the same questions answered correctly by Qwen3 8B, run locally, without and with the semantic layer. As above; Ollama on one host (Apple M5, 24 GB), temperature 0, thinking off. Source: [ai-platform-architecture/results/assistant.json](https://github.com/technobasant/ai-platform-architecture/blob/main/results/assistant.json)
 <!-- evidence:end -->

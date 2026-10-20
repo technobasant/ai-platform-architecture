@@ -1,7 +1,7 @@
 [project]
 name = "ai-platform-architecture"
 version = "0.3.0"
-description = "The AI architecture for a fictional SaaS company's usage assistant: measured accuracy, isolation and cost, and decisions with evidence."
+description = "The AI architecture for a B2B SaaS company's usage assistant, a scenario common across the industry: measured accuracy, isolation and cost, and decisions with evidence."
 readme = "README.md"
 license = "Apache-2.0"
 authors = [{ name = "Basant Bhattarai" }]

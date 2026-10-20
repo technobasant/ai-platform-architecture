@@ -1,6 +1,6 @@
 -- The usage mart the assistant answers from: 200 customer accounts, their users, and one
 -- row per user, day, event type and platform for the third quarter of 2026. No personal
--- data: users are ids and roles. Seeded, so every build is the same.
+-- data: users are ids and roles. Generated with a fixed seed, so every build is the same.
 \set ON_ERROR_STOP on
 select setseed(0.17);
 

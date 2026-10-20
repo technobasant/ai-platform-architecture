@@ -1,7 +1,8 @@
 # 3. Options, measured
 
-How the assistant could be built, each measured on the same lab: a seeded copy of the usage
-mart (200 accounts, 1,935 users, 142,896 rows of daily activity for July to September 2026),
+How the assistant could be built, each measured on the same lab: a reproducible generated
+copy of the usage mart (200 accounts, 1,935 users, 142,896 rows of daily activity for July to
+September 2026),
 90 customer questions with answers computed by SQL, and 20 requests for other accounts' data.
 The method is in [5. Evaluation](05-evaluation.md) and [lab/](../lab); every number below is
 in [`results/assistant.json`](../results/assistant.json) and
@@ -87,7 +88,7 @@ leaked through the prompt, and for all 436 queries written for ordinary question
 |---|---|---|---|---|
 | A. Fixed question templates, no model | exact, for the templates only | ✔ | ✔ | ◐ every question a template |
 | B. The platform's assistant (Genie, Cortex Analyst) | 69 of 70 with the semantic layer | ◐ workspace identities; customers are not workspace users | ✘ 14.5 s median | ✔ |
-| C. **The client's service: hosted open-weight model, semantic layer, query tool scoped by a mechanism the model cannot influence** | 70 of 70 | ✔ by the identity and the rewrite | ✔ 2.9 s median | ◐ a small service |
+| C. **The company's service: hosted open-weight model, semantic layer, query tool scoped by a mechanism the model cannot influence** | 70 of 70 | ✔ by the identity and the rewrite | ✔ 2.9 s median | ◐ a small service |
 | D. The same with a self-hosted model | 64 of 70 at 8B | ✔ | ◐ | ✘ GPUs to run |
 | E. Retrieval over documents | not suited to numbers | ◐ | ✔ | ◐ |
 
@@ -104,7 +105,7 @@ measured, its answers cost $0.00060, not the $0.00084 the table gives it at gpt-
 token counts.
 
 <!-- cost:start -->
-List prices retrieved 2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the client's region) ([`cost/prices.yml`](../cost/prices.yml)); tokens per answer measured in the lab, question volumes from the brief ([`cost/workloads.yml`](../cost/workloads.yml)).
+List prices retrieved 2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the company's region) ([`cost/prices.yml`](../cost/prices.yml)); tokens per answer measured in the lab, question volumes from the brief ([`cost/workloads.yml`](../cost/workloads.yml)).
 
 | Model | Per answer | launch: 60,000/month | month 12: 150,000/month | month 36: 600,000/month |
 |---|---:|---:|---:|---:|
@@ -137,7 +138,7 @@ List prices retrieved 2026-10-18 (Databricks: 2026-10-19, AWS EU (Ireland), the 
 | gemini-3-5-flash-lite | 978 | 2,261 | 66,861 |
 <!-- cost:end -->
 
-At the client's volume the model bill is a rounding error against the $1,500 ceiling; the
+At the company's volume the model bill is a rounding error against the $1,500 ceiling; the
 engine that runs the queries is not, if it is a warehouse kept awake for them
 ([0014](../decisions/0014-cost-per-answer.md)). The
 break-even table above is price arithmetic only, not a hosting plan: L4 (24 GB) and L40S
